@@ -1,5 +1,6 @@
 package net.thomasclaxton.noter
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -25,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = NoteListAdapter(this)
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = GridLayoutManager(this, 2);
 
         noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(NoteViewModel::class.java)
         noteViewModel.allNotes.observe(this, Observer { notes ->
@@ -36,9 +38,11 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        val noteBundle: Bundle = data?.extras!!
-        noteBundle.getSerializable("NOTE").let {
-            noteViewModel.insert(it as Note)
+        if (resultCode == Activity.RESULT_OK) {
+            val noteBundle: Bundle = data?.extras!!
+            noteBundle.getSerializable("NOTE").let {
+                noteViewModel.insert(it as Note)
+            }
         }
     }
 

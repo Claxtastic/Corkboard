@@ -52,9 +52,19 @@ abstract class AppDatabase : RoomDatabase() {
             INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
                     var noteDao = database.noteDao()
-//                    noteDao.deleteAll()
+                    noteDao.deleteAll()
+                    loadSampleData(noteDao)
                 }
             }
+        }
+
+        suspend fun loadSampleData(noteDao: NoteDao) {
+            var newNote = Note("A Title", "A short body")
+            noteDao.insert(newNote)
+            newNote = Note("To-do: School", "Physics \n Bio \n Compsci \n History \n Spanish")
+            noteDao.insert(newNote)
+            newNote = Note("A third and final note longer title long", "")
+            noteDao.insert(newNote)
         }
     }
 }
