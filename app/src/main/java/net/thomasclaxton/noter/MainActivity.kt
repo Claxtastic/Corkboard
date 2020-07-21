@@ -1,0 +1,76 @@
+package net.thomasclaxton.noter
+
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+
+private const val TAG = "MainActivity"
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var noteViewModel: NoteViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar))
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
+        val adapter = NoteListAdapter(this)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(NoteViewModel::class.java)
+        noteViewModel.allNotes.observe(this, Observer { notes ->
+            notes?.let { adapter.setNotes(notes) }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val noteBundle: Bundle = data?.extras!!
+        noteBundle.getSerializable("NOTE").let {
+            noteViewModel.insert(it as Note)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    fun onFabClick(fabView: View) {
+        // Dialog: What kind of note?
+        //     - Note
+        //     - List
+        //     - Reminder
+        // (these can be converted in the editor as well)
+        val dialogFragment = NewItemDialogFragment.newInstance()
+        val fragmentManager = supportFragmentManager.beginTransaction()
+
+        dialogFragment.show(fragmentManager, "dialog")
+    }
+}
