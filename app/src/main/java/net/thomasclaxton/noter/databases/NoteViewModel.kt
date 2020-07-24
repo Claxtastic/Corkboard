@@ -36,10 +36,8 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     fun delete(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(uid)
         // TODO: Clean this up
-        synchronized(MainActivity.NOTES_ARRAY) {
-            for (note: Note in MainActivity.NOTES_ARRAY) {
-                if (note.uid == uid) MainActivity.NOTES_ARRAY.remove(note)
-            }
+        for (note: Note in MainActivity.NOTES_ARRAY) {
+            if (note.uid == uid) MainActivity.NOTES_ARRAY.remove(note)
         }
     }
 

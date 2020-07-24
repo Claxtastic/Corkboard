@@ -53,7 +53,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-                NOTES_ARRAY[position].let { noteViewModel.delete(it.uid) }
+                val swipedNote = NOTES_ARRAY[position]
+                noteViewModel.delete(swipedNote.uid)
             }
         }
 
@@ -94,7 +95,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveNewNote(data: Intent?) {
-        if (data?.extras!!.getSerializable("NOTE") != null) {
+        if (data?.extras != null) {
+            data?.extras!!.getSerializable("NOTE")
             val noteBundle: Bundle = data?.extras!!
             noteBundle.getSerializable("NOTE").let {
                 noteViewModel.insert(it as Note)

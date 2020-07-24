@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import net.thomasclaxton.noter.R
 import net.thomasclaxton.noter.activities.CreateNoteActivity
 import java.lang.IllegalStateException
 
@@ -26,8 +27,10 @@ class NewItemDialogFragment : DialogFragment() {
                 .setPositiveButton("Note")
                 { _, _ ->
                     val newNoteIntent = Intent(context, CreateNoteActivity::class.java)
-                    newNoteIntent.putExtra("REQUEST_CODE", 1)
-                    startActivityForResult(newNoteIntent, 1)
+                    newNoteIntent.putExtra(getString(R.string.extras_request_code), 1)
+
+                    // must call startActivityForResult() from activity, otherwise requestCode will change
+                    activity!!.startActivityForResult(newNoteIntent, 1)
                 }
                 .setNeutralButton("List")
                 { _, _ ->

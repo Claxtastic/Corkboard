@@ -2,4 +2,9 @@
     <!--main activity start-->
     <string name="app_name">Noter</string>
     <!--main activity end-->
+
+    <!--start extras-->
+    <string name="extras_request_code">REQUEST_CODE</string>
+    <string name="extras_node">NOTE</string>
+    <!--end extras-->
 </resources>

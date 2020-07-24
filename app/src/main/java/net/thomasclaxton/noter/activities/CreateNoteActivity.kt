@@ -41,7 +41,7 @@ class CreateNoteActivity : AppCompatActivity() {
         val titleText = findViewById<EditText>(R.id.editTextNoteTitle).text.toString()
         val bodyText = findViewById<EditText>(R.id.editTextNoteBody).text.toString()
 
-        intent.getIntExtra("REQUEST_CODE", 0).let {
+        intent.getIntExtra(getString(R.string.extras_request_code), 0).let {
             if (it == 1) {
                 // creating a new note
                 saveNewNote(titleText, bodyText)
