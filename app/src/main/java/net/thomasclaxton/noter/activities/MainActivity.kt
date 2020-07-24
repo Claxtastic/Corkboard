@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         /**
          * The master list which contains all notes currently in database
          */
-        val NOTES_ARRAY: ArrayList<Note> = ArrayList()
+        var NOTES_ARRAY: ArrayList<Note> = ArrayList<Note>()
     }
 
     private lateinit var noteViewModel: NoteViewModel
@@ -35,8 +35,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        // TODO: Maybe just make adapter a member field
         val adapter: NoteListAdapter =  setupRecyclerView()
         setupViewModel(adapter)
+
+        // Set the notes we loaded from db into the local list
+//        noteViewModel.getAll()?.let { NOTES_ARRAY.addAll(it) }
     }
 
     private fun setupRecyclerView(): NoteListAdapter {
@@ -51,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-//                val noteSwiped = NOTES_ARRAY[position]
+                NOTES_ARRAY[position].let { noteViewModel.delete(it.uid) }
             }
         }
 
@@ -71,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         return adapter
     }
 
-    fun setupViewModel(adapter: NoteListAdapter) {
+    private fun setupViewModel(adapter: NoteListAdapter) {
         noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(
             NoteViewModel::class.java)
         noteViewModel.allNotes.observe(this, Observer { notes ->
@@ -82,12 +86,14 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        // TODO: Separate into functions
         if (requestCode == 2) {
             // editing
             if (data?.extras!!.getSerializable("NOTE") != null) {
                 val editedNodeBundle: Bundle = data.extras!!
                 editedNodeBundle.getSerializable("NOTE").let {
                     noteViewModel.update(it as Note)
+
                 }
             } else {
                 // all the fields of this note were backspaced
@@ -100,25 +106,16 @@ class MainActivity : AppCompatActivity() {
             val noteBundle: Bundle = data?.extras!!
             noteBundle.getSerializable("NOTE").let {
                 noteViewModel.insert(it as Note)
-//                notes.add(it)
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)

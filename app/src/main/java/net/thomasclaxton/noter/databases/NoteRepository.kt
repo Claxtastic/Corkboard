@@ -20,4 +20,8 @@ class NoteRepository(private val noteDao: NoteDao) {
     fun delete(uid: String) {
         noteDao.delete(uid)
     }
+
+    fun getAll(): LiveData<List<Note>> {
+        return noteDao.getAll()
+    }
 }

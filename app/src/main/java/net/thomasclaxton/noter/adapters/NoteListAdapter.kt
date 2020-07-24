@@ -20,17 +20,17 @@ class NoteListAdapter internal constructor (context: Context)
     : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var notes = emptyList<Note>()
+    private var mNotes = MainActivity.NOTES_ARRAY
     private lateinit var mRecyclerView: RecyclerView
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        mRecyclerView = recyclerView
-    }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
         val noteBodyView: TextView = itemView.findViewById(R.id.textViewNoteBody)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        mRecyclerView = recyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -41,7 +41,7 @@ class NoteListAdapter internal constructor (context: Context)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        val currentNote: Note = notes[position]
+        val currentNote: Note = mNotes[position]
         holder.noteTitleView.text = currentNote.title
         holder.noteBodyView.text = currentNote.body
 
@@ -62,9 +62,11 @@ class NoteListAdapter internal constructor (context: Context)
     }
 
     internal fun setNotes(notes: List<Note>) {
-        this.notes = notes
+        // TODO: clean the clumsiness
+        MainActivity.NOTES_ARRAY = notes as ArrayList<Note>
+        mNotes = MainActivity.NOTES_ARRAY
         notifyDataSetChanged()
     }
 
-    override fun getItemCount() = notes.size
+    override fun getItemCount() = mNotes.size
 }
