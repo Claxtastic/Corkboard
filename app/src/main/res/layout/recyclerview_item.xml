@@ -21,6 +21,7 @@
         app:cardCornerRadius="6dp"
         app:cardElevation="6dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
