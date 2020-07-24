@@ -1,7 +1,6 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.databases
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,6 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.thomasclaxton.noter.models.Note
 
 private val TAG = "AppDatabase";
 
@@ -24,7 +24,8 @@ abstract class AppDatabase : RoomDatabase() {
             context: Context,
             scope: CoroutineScope
         ): AppDatabase {
-            val tempInstance = INSTANCE
+            val tempInstance =
+                INSTANCE
             if (tempInstance != null) {
                 return tempInstance
             }
@@ -35,7 +36,11 @@ abstract class AppDatabase : RoomDatabase() {
                     "noter_database"
                     )
                     .fallbackToDestructiveMigration()
-                    .addCallback(AppDatabaseCallback(scope))
+                    .addCallback(
+                        AppDatabaseCallback(
+                            scope
+                        )
+                    )
                     .build()
                 INSTANCE = instance
                 return instance
@@ -59,11 +64,18 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         suspend fun loadSampleData(noteDao: NoteDao) {
-            var newNote = Note("A Title", "A short body")
+            var newNote =
+                Note("A Title", "A short body")
             noteDao.insert(newNote)
-            newNote = Note("To-do: School", "Physics \n Bio \n Compsci \n History \n Spanish")
+            newNote = Note(
+                "To-do: School",
+                "Physics \n Bio \n Compsci \n History \n Spanish"
+            )
             noteDao.insert(newNote)
-            newNote = Note("A third and final note longer title long", "")
+            newNote = Note(
+                "A third and final note longer title long",
+                ""
+            )
             noteDao.insert(newNote)
         }
     }

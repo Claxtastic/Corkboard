@@ -1,9 +1,7 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import net.thomasclaxton.noter.fragments.NewItemDialogFragment
+import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.noter.adapters.NoteListAdapter
+import net.thomasclaxton.noter.R
+import net.thomasclaxton.noter.databases.NoteViewModel
 
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -29,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(this, 2);
 
-        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(NoteViewModel::class.java)
+        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(
+            NoteViewModel::class.java)
         noteViewModel.allNotes.observe(this, Observer { notes ->
             notes?.let { adapter.setNotes(notes) }
         })
@@ -87,7 +91,8 @@ class MainActivity : AppCompatActivity() {
         //     - List
         //     - Reminder
         // (these can be converted in the editor as well)
-        val dialogFragment = NewItemDialogFragment.newInstance()
+        val dialogFragment =
+            NewItemDialogFragment.newInstance()
         val fragmentManager = supportFragmentManager.beginTransaction()
 
         dialogFragment.show(fragmentManager, "dialog")

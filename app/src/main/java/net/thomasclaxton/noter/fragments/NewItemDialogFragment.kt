@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.fragments
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import net.thomasclaxton.noter.activities.CreateNoteActivity
 import java.lang.IllegalStateException
 
 class NewItemDialogFragment : DialogFragment() {

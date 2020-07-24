@@ -1,6 +1,7 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.databases
 
 import androidx.lifecycle.LiveData
+import net.thomasclaxton.noter.models.Note
 
 class NoteRepository(private val noteDao: NoteDao) {
     val allNotes: LiveData<List<Note>> = noteDao.getAll()

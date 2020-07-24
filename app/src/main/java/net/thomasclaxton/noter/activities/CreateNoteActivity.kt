@@ -1,12 +1,13 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.activities
 
 import android.app.Activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.EditText
+import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.noter.R
 
 private const val RESULT_EDIT: Int = 2
 private const val TAG = "CreateNoteActivity";
@@ -59,7 +60,8 @@ class CreateNoteActivity : AppCompatActivity() {
                 // new note
                 Intent().let {
                     val bundle = Bundle()
-                    val newNote = Note(titleText, bodyText)
+                    val newNote =
+                        Note(titleText, bodyText)
 
                     bundle.putSerializable("NOTE", newNote)
                     it.putExtras(bundle)

@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.noter.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
