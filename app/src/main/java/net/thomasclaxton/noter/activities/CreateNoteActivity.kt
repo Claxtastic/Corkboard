@@ -1,10 +1,10 @@
 package net.thomasclaxton.noter.activities
 
 import android.app.Activity
-
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import net.thomasclaxton.noter.models.Note
 import net.thomasclaxton.noter.R
@@ -41,32 +41,46 @@ class CreateNoteActivity : AppCompatActivity() {
         val titleText = findViewById<EditText>(R.id.editTextNoteTitle).text.toString()
         val bodyText = findViewById<EditText>(R.id.editTextNoteBody).text.toString()
 
+        intent.getIntExtra("REQUEST_CODE", 0).let {
+            if (it == 1) {
+                // creating a new note
+                saveNewNote(titleText, bodyText)
+            } else if (it == 2) {
+                // editing an existing note
+                saveEditedNote(titleText, bodyText)
+            }
+        }
+    }
+
+    private fun saveNewNote(titleText: String, bodyText: String) {
         if (!noteIsEmpty(titleText, bodyText)) {
-            if (intent.hasExtra("REQUESTCODE") && intent.getIntExtra("REQUESTCODE", 0) == 2) {
-                // editing
-                Intent().let {
-                    val bundle = Bundle()
-                    val editedNote: Note = intent.getSerializableExtra("NOTE") as Note
+            Intent().let {
+                val bundle = Bundle()
+                val newNote = Note(titleText, bodyText)
 
-                    // TODO: Only change fields if they have been changed
-                    editedNote.title = titleText
-                    editedNote.body = bodyText
+                bundle.putSerializable("NOTE", newNote)
+                it.putExtras(bundle)
+                setResult(Activity.RESULT_OK, it)
+            }
+        } else {
+            // the fields of this note are empty
+            setResult(Activity.RESULT_OK)
+        }
+    }
 
-                    bundle.putSerializable("NOTE", editedNote)
-                    it.putExtras(bundle)
-                    setResult(RESULT_EDIT, it)
-                }
-            } else {
-                // new note
-                Intent().let {
-                    val bundle = Bundle()
-                    val newNote =
-                        Note(titleText, bodyText)
+    private fun saveEditedNote(titleText: String, bodyText: String) {
+        if (!noteIsEmpty(titleText, bodyText)) {
+            Intent().let {
+                val bundle = Bundle()
+                val editedNote: Note = intent.getSerializableExtra("NOTE") as Note
 
-                    bundle.putSerializable("NOTE", newNote)
-                    it.putExtras(bundle)
-                    setResult(Activity.RESULT_OK, it)
-                }
+                // TODO: Only change fields if they have been changed
+                editedNote.title = titleText
+                editedNote.body = bodyText
+
+                bundle.putSerializable("NOTE", editedNote)
+                it.putExtras(bundle)
+                setResult(RESULT_EDIT, it)
             }
         } else {
             // user backspaced all the fields of this note

@@ -2,6 +2,7 @@ package net.thomasclaxton.noter.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -38,9 +39,6 @@ class MainActivity : AppCompatActivity() {
         // TODO: Maybe just make adapter a member field
         val adapter: NoteListAdapter =  setupRecyclerView()
         setupViewModel(adapter)
-
-        // Set the notes we loaded from db into the local list
-//        noteViewModel.getAll()?.let { NOTES_ARRAY.addAll(it) }
     }
 
     private fun setupRecyclerView(): NoteListAdapter {
@@ -86,26 +84,34 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // TODO: Separate into functions
-        if (requestCode == 2) {
-            // editing
-            if (data?.extras!!.getSerializable("NOTE") != null) {
-                val editedNodeBundle: Bundle = data.extras!!
-                editedNodeBundle.getSerializable("NOTE").let {
-                    noteViewModel.update(it as Note)
-
-                }
-            } else {
-                // all the fields of this note were backspaced
-                data.getStringExtra("UID")!!.let {
-                    noteViewModel.delete(it)
-                }
-            }
+        if (requestCode == 1) {
+            // new note was created
+            saveNewNote(data)
+        } else if (requestCode == 2) {
+            // existing note was edited
+            saveEditedNote(data)
         }
-        else {
+    }
+
+    private fun saveNewNote(data: Intent?) {
+        if (data?.extras!!.getSerializable("NOTE") != null) {
             val noteBundle: Bundle = data?.extras!!
             noteBundle.getSerializable("NOTE").let {
                 noteViewModel.insert(it as Note)
+            }
+        }
+    }
+
+    private fun saveEditedNote(data: Intent?) {
+        if (data?.extras!!.getSerializable("NOTE") != null) {
+            val editedNodeBundle: Bundle = data.extras!!
+            editedNodeBundle.getSerializable("NOTE").let {
+                noteViewModel.update(it as Note)
+            }
+        } else {
+            // all the fields of this note were backspaced
+            data.getStringExtra("UID")!!.let {
+                noteViewModel.delete(it)
             }
         }
     }

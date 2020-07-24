@@ -48,7 +48,7 @@ class NoteListAdapter internal constructor (context: Context)
         holder.itemView.setOnClickListener {
             val editOrViewIntent = Intent(it.context, CreateNoteActivity::class.java)
             editOrViewIntent.putExtra("NOTE", currentNote)
-            editOrViewIntent.putExtra("REQUESTCODE", 2)
+            editOrViewIntent.putExtra("REQUEST_CODE", 2)
 
             val context = it.context as Activity
             context.startActivityForResult(editOrViewIntent, 2)

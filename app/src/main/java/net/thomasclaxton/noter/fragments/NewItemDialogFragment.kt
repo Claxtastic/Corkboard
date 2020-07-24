@@ -25,7 +25,9 @@ class NewItemDialogFragment : DialogFragment() {
             builder.setMessage("Choose type:")
                 .setPositiveButton("Note")
                 { _, _ ->
-                    startActivityForResult(Intent(context, CreateNoteActivity::class.java), 1)
+                    val newNoteIntent = Intent(context, CreateNoteActivity::class.java)
+                    newNoteIntent.putExtra("REQUEST_CODE", 1)
+                    startActivityForResult(newNoteIntent, 1)
                 }
                 .setNeutralButton("List")
                 { _, _ ->
