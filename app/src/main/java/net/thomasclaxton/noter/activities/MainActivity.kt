@@ -9,6 +9,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import net.thomasclaxton.noter.fragments.NewItemDialogFragment
 import net.thomasclaxton.noter.models.Note
@@ -17,21 +18,60 @@ import net.thomasclaxton.noter.R
 import net.thomasclaxton.noter.databases.NoteViewModel
 
 private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        /**
+         * The master list which contains all notes currently in database
+         */
+        val NOTES_ARRAY: ArrayList<Note> = ArrayList()
+    }
+
     private lateinit var noteViewModel: NoteViewModel
-    private val notes: ArrayList<Note> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        val adapter: NoteListAdapter =  setupRecyclerView()
+        setupViewModel(adapter)
+    }
+
+    private fun setupRecyclerView(): NoteListAdapter {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         val adapter = NoteListAdapter(this)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = GridLayoutManager(this, 2);
 
+        // Callback for swipe to delete on RecyclerView item
+        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position: Int = viewHolder.adapterPosition
+//                val noteSwiped = NOTES_ARRAY[position]
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+
+        itemTouchHelper.attachToRecyclerView(recyclerView)
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = object : GridLayoutManager(this, 2) {
+            override fun onLayoutCompleted(state: RecyclerView.State?) {
+                super.onLayoutCompleted(state)
+                // attach swipe helper to RecyclerView only when the layout is completed
+                itemTouchHelper.attachToRecyclerView(recyclerView)
+            }
+        }
+
+        return adapter
+    }
+
+    fun setupViewModel(adapter: NoteListAdapter) {
         noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(
             NoteViewModel::class.java)
         noteViewModel.allNotes.observe(this, Observer { notes ->

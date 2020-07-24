@@ -3,6 +3,7 @@ package net.thomasclaxton.noter.adapters
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import net.thomasclaxton.noter.R
 import net.thomasclaxton.noter.activities.CreateNoteActivity
 import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.noter.activities.MainActivity
 
 private const val TAG = "NoteListAdapter"
 
@@ -19,6 +21,12 @@ class NoteListAdapter internal constructor (context: Context)
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var notes = emptyList<Note>()
+    private lateinit var mRecyclerView: RecyclerView
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        mRecyclerView = recyclerView
+    }
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
@@ -44,6 +52,12 @@ class NoteListAdapter internal constructor (context: Context)
 
             val context = it.context as Activity
             context.startActivityForResult(editOrViewIntent, 2)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            // add this note to the selection pool
+            it.setBackgroundColor(Color.WHITE)
+            true
         }
     }
 
