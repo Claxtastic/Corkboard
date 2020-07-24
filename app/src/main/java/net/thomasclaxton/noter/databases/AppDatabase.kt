@@ -12,7 +12,7 @@ import net.thomasclaxton.noter.models.Note
 
 private val TAG = "AppDatabase";
 
-@Database(entities=arrayOf(Note::class), version = 2)
+@Database(entities=[Note::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
 

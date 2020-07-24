@@ -6,11 +6,11 @@ import net.thomasclaxton.noter.models.Note
 class NoteRepository(private val noteDao: NoteDao) {
     val allNotes: LiveData<List<Note>> = noteDao.getAll()
 
-    suspend fun insert(note: Note) {
+    fun insert(note: Note) {
         noteDao.insert(note)
     }
 
-    suspend fun update(note: Note) {
+    fun update(note: Note) {
         val uid: String = note.uid
         val newTitle: String = note.title
         val newBody: String = note.body
