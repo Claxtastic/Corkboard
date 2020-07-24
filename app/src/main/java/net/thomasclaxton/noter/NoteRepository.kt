@@ -8,4 +8,11 @@ class NoteRepository(private val noteDao: NoteDao) {
     suspend fun insert(note: Note) {
         noteDao.insert(note)
     }
+
+    suspend fun update(note: Note) {
+        val uid: String = note.uid
+        val newTitle: String = note.title
+        val newBody: String = note.body
+        noteDao.update(uid, newTitle, newBody)
+    }
 }

@@ -11,13 +11,13 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var noteViewModel: NoteViewModel
+    private val notes: ArrayList<Note> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +38,23 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == 2) {
+            // editing
+            Log.d(TAG, ": saving edit");
+            val editedNodeBundle: Bundle = data?.extras!!
+            editedNodeBundle.getSerializable("NOTE").let {
+                val note = it as Note
+                Log.d(TAG, ": edited ${note.uid}");
+                noteViewModel.update(it as Note)
+            }
+        }
+        else if (resultCode == Activity.RESULT_OK) {
             val noteBundle: Bundle = data?.extras!!
             noteBundle.getSerializable("NOTE").let {
+                val note = it as Note
                 noteViewModel.insert(it as Note)
+                Log.d(TAG, ": created ${note.uid}");
+                notes.add(it as Note)
             }
         }
     }

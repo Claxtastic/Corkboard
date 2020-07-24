@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 private val TAG = "AppDatabase";
 
-@Database(entities=arrayOf(Note::class), version = 1)
+@Database(entities=arrayOf(Note::class), version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
 
