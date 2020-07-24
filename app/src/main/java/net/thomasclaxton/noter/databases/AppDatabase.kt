@@ -63,7 +63,7 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        suspend fun loadSampleData(noteDao: NoteDao) {
+        fun loadSampleData(noteDao: NoteDao) {
             var newNote =
                 Note("A Title", "A short body")
             noteDao.insert(newNote)
