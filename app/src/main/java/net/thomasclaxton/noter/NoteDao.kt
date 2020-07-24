@@ -17,11 +17,9 @@ interface NoteDao {
     @Insert
     suspend fun insertAll(vararg notes: Note)
 
-//    @Query("SELECT * FROM Note WHERE ")
+    @Query("DELETE FROM Note WHERE uid=:uid")
+    fun delete(uid: String)
 
-    @Delete
-    fun delete(note: Note)
-
-    @Query("DELETE FROM note")
+    @Query("DELETE FROM Note")
     fun deleteAll()
 }

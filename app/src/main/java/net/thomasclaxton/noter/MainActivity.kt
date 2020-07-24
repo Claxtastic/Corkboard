@@ -40,21 +40,23 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == 2) {
             // editing
-            Log.d(TAG, ": saving edit");
-            val editedNodeBundle: Bundle = data?.extras!!
-            editedNodeBundle.getSerializable("NOTE").let {
-                val note = it as Note
-                Log.d(TAG, ": edited ${note.uid}");
-                noteViewModel.update(it as Note)
+            if (data?.extras!!.getSerializable("NOTE") != null) {
+                val editedNodeBundle: Bundle = data.extras!!
+                editedNodeBundle.getSerializable("NOTE").let {
+                    noteViewModel.update(it as Note)
+                }
+            } else {
+                // all the fields of this note were backspaced
+                data.getStringExtra("UID")!!.let {
+                    noteViewModel.delete(it)
+                }
             }
         }
-        else if (resultCode == Activity.RESULT_OK) {
+        else {
             val noteBundle: Bundle = data?.extras!!
             noteBundle.getSerializable("NOTE").let {
-                val note = it as Note
                 noteViewModel.insert(it as Note)
-                Log.d(TAG, ": created ${note.uid}");
-                notes.add(it as Note)
+//                notes.add(it)
             }
         }
     }

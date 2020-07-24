@@ -15,4 +15,8 @@ class NoteRepository(private val noteDao: NoteDao) {
         val newBody: String = note.body
         noteDao.update(uid, newTitle, newBody)
     }
+
+    fun delete(uid: String) {
+        noteDao.delete(uid)
+    }
 }
