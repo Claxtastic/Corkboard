@@ -1,10 +1,11 @@
 <resources>
     <!--main activity start-->
-    <string name="app_name">Noter</string>
+    <string name="app_name">Cork Board</string>
     <!--main activity end-->
 
     <!--start extras-->
     <string name="extras_request_code">REQUEST_CODE</string>
     <string name="extras_note">NOTE</string>
+    <string name="extras_uid">UID</string>
     <!--end extras-->
 </resources>

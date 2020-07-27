@@ -86,7 +86,7 @@ class CreateNoteActivity : AppCompatActivity() {
             // user backspaced all the fields of this note
             Intent().let {
                 val deletedNote: Note = intent.getSerializableExtra(getString(R.string.extras_note)) as Note
-                it.putExtra("UID", deletedNote.uid)
+                it.putExtra(getString(R.string.extras_uid), deletedNote.uid)
                 setResult(Activity.RESULT_OK, it)
             }
         }

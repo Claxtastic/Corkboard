@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         /**
          * The master list which contains all notes currently in database.
          */
-        // TODO: change to val
         var NOTES_ARRAY: ArrayList<Note> = ArrayList<Note>()
 
         /**
@@ -119,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             // all the fields of this note were backspaced
-            data.getStringExtra("UID")!!.let {
+            data.getStringExtra(getString(R.string.extras_uid))!!.let {
                 noteViewModel.delete(it)
             }
         }
@@ -144,7 +142,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (currentMenu == R.menu.menu_select) {
-            Log.d(TAG, ": select menu is active");
             // the selection menu is active, so 1 >= note must be selected
             for (note: Note in NOTES_ARRAY) {
                 if (note.isSelected) {

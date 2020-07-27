@@ -6,7 +6,6 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
-import kotlin.properties.Delegates
 
 @Entity
 data class Note(
