@@ -9,8 +9,8 @@ import java.util.*
 
 @Entity
 data class Note(
-    @ColumnInfo(name="title") var title: String,
-    @ColumnInfo(name="body") var body: String
+    @ColumnInfo(name = "title") var title: String,
+    @ColumnInfo(name = "body") var body: String
 ) : Serializable {
 
     @PrimaryKey

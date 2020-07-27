@@ -13,7 +13,7 @@ interface NoteDao {
     fun insert(note: Note)
 
     @Query("UPDATE Note SET title=:title, body=:body WHERE uid=:uid")
-    fun update(uid: String, title: String, body:String)
+    fun update(uid: String, title: String, body: String)
 
     @Insert
     fun insertAll(vararg notes: Note)

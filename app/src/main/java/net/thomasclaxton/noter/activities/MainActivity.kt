@@ -2,7 +2,6 @@ package net.thomasclaxton.noter.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -81,10 +80,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewModel(adapter: NoteListAdapter) {
         noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(
-            NoteViewModel::class.java)
-        noteViewModel.allNotes.observe(this, Observer { notes ->
-            notes?.let { adapter.setNotes(notes) }
-        })
+            NoteViewModel::class.java
+        )
+
+        noteViewModel.allNotes.observe(
+            this,
+            Observer { notes ->
+                notes?.let { adapter.setNotes(notes) }
+            }
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -125,7 +129,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(currentMenu, menu)
-        when(currentMenu) {
+        when (currentMenu) {
             R.menu.menu_select -> supportActionBar?.title = ""
             else -> supportActionBar?.title = getString(R.string.app_name)
         }
@@ -178,9 +182,9 @@ class MainActivity : AppCompatActivity() {
     fun onDeleteClick(view: MenuItem) {
         NOTES_ARRAY
             .filter { it.isSelected }
-                .forEach {
-                    noteViewModel.delete(it.uid)
-                }
+            .forEach {
+                noteViewModel.delete(it.uid)
+            }
         currentMenu = R.menu.menu_main
         invalidateOptionsMenu()
     }

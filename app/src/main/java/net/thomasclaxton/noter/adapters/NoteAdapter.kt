@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +17,8 @@ import net.thomasclaxton.noter.activities.MainActivity
 
 private const val TAG = "NoteListAdapter"
 
-class NoteListAdapter internal constructor (context: Context)
-    : RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
+class NoteListAdapter internal constructor (context: Context) :
+    RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var mNotes = MainActivity.NOTES_ARRAY

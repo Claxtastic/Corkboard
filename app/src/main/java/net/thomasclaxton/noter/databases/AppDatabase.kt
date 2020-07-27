@@ -10,9 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.thomasclaxton.noter.models.Note
 
-private val TAG = "AppDatabase";
+private val TAG = "AppDatabase"
 
-@Database(entities=[Note::class], version = 2)
+@Database(entities = [Note::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
 
@@ -34,7 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "noter_database"
-                    )
+                )
                     .fallbackToDestructiveMigration()
                     .addCallback(
                         AppDatabaseCallback(

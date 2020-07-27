@@ -24,21 +24,18 @@ class NewItemDialogFragment : DialogFragment() {
             // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it)
             builder.setMessage("Choose type:")
-                .setPositiveButton("Note")
-                { _, _ ->
+                .setPositiveButton("Note") { _, _ ->
                     val newNoteIntent = Intent(context, CreateNoteActivity::class.java)
                     newNoteIntent.putExtra(getString(R.string.extras_request_code), 1)
 
                     // must call startActivityForResult() from activity, otherwise requestCode will change
                     activity!!.startActivityForResult(newNoteIntent, 1)
                 }
-                .setNeutralButton("List")
-                { _, _ ->
-                    Toast.makeText(context, "List", Toast.LENGTH_SHORT).show();
+                .setNeutralButton("List") { _, _ ->
+                    Toast.makeText(context, "List", Toast.LENGTH_SHORT).show()
                 }
-                .setNegativeButton("Reminder")
-                { _, _ ->
-                    Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show();
+                .setNegativeButton("Reminder") { _, _ ->
+                    Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show()
                 }
             // Create the AlertDialog object and return it
             builder.create()

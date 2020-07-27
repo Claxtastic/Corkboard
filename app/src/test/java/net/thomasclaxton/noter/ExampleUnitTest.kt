@@ -1,7 +1,6 @@
 package net.thomasclaxton.noter
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
