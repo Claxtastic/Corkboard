@@ -10,5 +10,6 @@
     <color name="colorDarkPrimary">#424242</color>
     <color name="colorDarkPrimaryDark">#1b1b1b</color>
     <color name="colorDarkAccent">#f57f17</color>
+    <color name="colorDarkBackground">#2E2E2E</color>
     <!--end dark theme colors-->
 </resources>

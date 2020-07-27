@@ -24,21 +24,27 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         /**
-         * The master list which contains all notes currently in database
+         * The master list which contains all notes currently in database.
          */
+        // TODO: change to val
         var NOTES_ARRAY: ArrayList<Note> = ArrayList<Note>()
+
+        /**
+         * Menu for this activity. Changes depending on whether a note is selected.
+         */
+        var currentMenu: Int = R.menu.menu_main
     }
 
     private lateinit var noteViewModel: NoteViewModel
+    private lateinit var mAdapter: NoteListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        // TODO: Maybe just make adapter a member field
-        val adapter: NoteListAdapter =  setupRecyclerView()
-        setupViewModel(adapter)
+        mAdapter = setupRecyclerView()
+        setupViewModel(mAdapter)
     }
 
     private fun setupRecyclerView(): NoteListAdapter {
@@ -96,18 +102,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun saveNewNote(data: Intent?) {
         if (data?.extras != null) {
-            data?.extras!!.getSerializable("NOTE")
+            data?.extras!!.getSerializable(getString(R.string.extras_note))
             val noteBundle: Bundle = data?.extras!!
-            noteBundle.getSerializable("NOTE").let {
+            noteBundle.getSerializable(getString(R.string.extras_note)).let {
                 noteViewModel.insert(it as Note)
             }
         }
     }
 
     private fun saveEditedNote(data: Intent?) {
-        if (data?.extras!!.getSerializable("NOTE") != null) {
+        if (data?.extras!!.getSerializable(getString(R.string.extras_note)) != null) {
             val editedNodeBundle: Bundle = data.extras!!
-            editedNodeBundle.getSerializable("NOTE").let {
+            editedNodeBundle.getSerializable(getString(R.string.extras_note)).let {
                 noteViewModel.update(it as Note)
             }
         } else {
@@ -119,7 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(currentMenu, menu)
         return true
     }
 
@@ -127,6 +133,23 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        if (currentMenu == R.menu.menu_select) {
+            Log.d(TAG, ": select menu is active");
+            // the selection menu is active, so 1 >= note must be selected
+            for (note: Note in NOTES_ARRAY) {
+                if (note.isSelected) {
+                    note.isSelected = false
+                    mAdapter.notifyDataSetChanged()
+                }
+            }
+            currentMenu = R.menu.menu_main
+            invalidateOptionsMenu()
+        } else {
+            super.onBackPressed()
         }
     }
 

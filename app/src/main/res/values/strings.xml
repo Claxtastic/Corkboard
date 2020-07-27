@@ -5,6 +5,6 @@
 
     <!--start extras-->
     <string name="extras_request_code">REQUEST_CODE</string>
-    <string name="extras_node">NOTE</string>
+    <string name="extras_note">NOTE</string>
     <!--end extras-->
 </resources>

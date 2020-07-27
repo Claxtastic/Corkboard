@@ -2,9 +2,11 @@ package net.thomasclaxton.noter.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.io.Serializable
 import java.util.*
+import kotlin.properties.Delegates
 
 @Entity
 data class Note(
@@ -14,4 +16,7 @@ data class Note(
 
     @PrimaryKey
     var uid: String = UUID.randomUUID().toString()
+
+    @Ignore
+    var isSelected: Boolean = false
 }

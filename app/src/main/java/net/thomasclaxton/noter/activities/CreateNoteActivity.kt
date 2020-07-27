@@ -21,9 +21,9 @@ class CreateNoteActivity : AppCompatActivity() {
     }
 
     private fun checkExtras() {
-        if (intent.hasExtra("NOTE")) {
+        if (intent.hasExtra(getString(R.string.extras_note))) {
             // we are editing or viewing an already created note
-            (intent.getSerializableExtra("NOTE") as Note).let {
+            (intent.getSerializableExtra(getString(R.string.extras_note)) as Note).let {
                 findViewById<EditText>(R.id.editTextNoteTitle).setText(it.title)
                 findViewById<EditText>(R.id.editTextNoteBody).setText(it.body)
             }
@@ -58,7 +58,7 @@ class CreateNoteActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 val newNote = Note(titleText, bodyText)
 
-                bundle.putSerializable("NOTE", newNote)
+                bundle.putSerializable(getString(R.string.extras_note), newNote)
                 it.putExtras(bundle)
                 setResult(Activity.RESULT_OK, it)
             }
@@ -72,20 +72,20 @@ class CreateNoteActivity : AppCompatActivity() {
         if (!noteIsEmpty(titleText, bodyText)) {
             Intent().let {
                 val bundle = Bundle()
-                val editedNote: Note = intent.getSerializableExtra("NOTE") as Note
+                val editedNote: Note = intent.getSerializableExtra(getString(R.string.extras_note)) as Note
 
                 // TODO: Only change fields if they have been changed
                 editedNote.title = titleText
                 editedNote.body = bodyText
 
-                bundle.putSerializable("NOTE", editedNote)
+                bundle.putSerializable(getString(R.string.extras_note), editedNote)
                 it.putExtras(bundle)
                 setResult(RESULT_EDIT, it)
             }
         } else {
             // user backspaced all the fields of this note
             Intent().let {
-                val deletedNote: Note = intent.getSerializableExtra("NOTE") as Note
+                val deletedNote: Note = intent.getSerializableExtra(getString(R.string.extras_note)) as Note
                 it.putExtra("UID", deletedNote.uid)
                 setResult(Activity.RESULT_OK, it)
             }
