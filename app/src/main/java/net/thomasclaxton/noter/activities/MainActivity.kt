@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -126,6 +127,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(currentMenu, menu)
+        when(currentMenu) {
+            R.menu.menu_select -> supportActionBar?.title = ""
+            else -> supportActionBar?.title = getString(R.string.app_name)
+        }
+
         return true
     }
 
@@ -164,5 +170,21 @@ class MainActivity : AppCompatActivity() {
         val fragmentManager = supportFragmentManager.beginTransaction()
 
         dialogFragment.show(fragmentManager, "dialog")
+    }
+
+    fun onCloseClick(view: MenuItem) {
+        currentMenu = R.menu.menu_main
+        mAdapter.notifyDataSetChanged()
+        invalidateOptionsMenu()
+    }
+
+    fun onDeleteClick(view: MenuItem) {
+        NOTES_ARRAY
+            .filter { it.isSelected }
+                .forEach {
+                    noteViewModel.delete(it.uid)
+                }
+        currentMenu = R.menu.menu_main
+        invalidateOptionsMenu()
     }
 }
