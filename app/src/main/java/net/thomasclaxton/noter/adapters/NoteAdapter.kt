@@ -16,16 +16,28 @@ import net.thomasclaxton.noter.models.Note
 import net.thomasclaxton.noter.activities.MainActivity
 
 private const val TAG = "NoteListAdapter"
+private const val NOTE = 1
+private const val TITLE_ONLY = 2
+private const val BODY_ONLY = 3
 
 class NoteListAdapter internal constructor (context: Context) :
-    RecyclerView.Adapter<NoteListAdapter.NoteViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var mNotes = MainActivity.NOTES_ARRAY
+    private lateinit var mParent: ViewGroup
     private lateinit var mRecyclerView: RecyclerView
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
+        val noteBodyView: TextView = itemView.findViewById(R.id.textViewNoteBody)
+    }
+
+    inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
+    }
+
+    inner class BodyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteBodyView: TextView = itemView.findViewById(R.id.textViewNoteBody)
     }
 
@@ -34,21 +46,59 @@ class NoteListAdapter internal constructor (context: Context) :
         mRecyclerView = recyclerView
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
-        val height: Int = parent.measuredHeight / 4
-        itemView.minimumHeight = height
-        return NoteViewHolder(itemView)
+    override fun getItemViewType(position: Int): Int {
+        return if (MainActivity.NOTES_ARRAY[position].body.isEmpty())
+            TITLE_ONLY
+        else if (MainActivity.NOTES_ARRAY[position].title.isEmpty())
+            BODY_ONLY
+        else
+            NOTE
     }
 
-    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        when (viewType) {
+            NOTE -> {
+                val itemView = inflater.inflate(R.layout.recyclerview_note_item, parent, false)
+                val height: Int = parent.measuredHeight / 4
+                itemView.minimumHeight = height
+                return NoteViewHolder(itemView)
+            }
+            TITLE_ONLY -> {
+                val itemView = inflater.inflate(R.layout.recyclerview_title_item, parent, false)
+                val height: Int = parent.measuredHeight / 4
+                itemView.minimumHeight = height
+                return TitleViewHolder(itemView)
+            }
+            BODY_ONLY -> {
+                val itemView = inflater.inflate(R.layout.recyclerview_body_item, parent, false)
+                val height: Int = parent.measuredHeight / 4
+                itemView.minimumHeight = height
+                return BodyViewHolder(itemView)
+            }
+            else -> {
+                return NoteViewHolder(inflater.inflate(R.layout.recyclerview_note_item, parent, false))
+            }
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentNote: Note = mNotes[position]
         holder.itemView.let {
             it.setBackgroundColor(ContextCompat.getColor(it.context, R.color.colorDarkBackground))
         }
 
-        holder.noteTitleView.text = currentNote.title
-        holder.noteBodyView.text = currentNote.body
+        when (holder.itemViewType) {
+            NOTE ->
+                (holder as NoteViewHolder).let {
+                    it.noteTitleView.text = currentNote.title
+                    it.noteBodyView.text = currentNote.body
+                }
+            TITLE_ONLY -> {
+                (holder as TitleViewHolder).noteTitleView.text = currentNote.title
+            }
+            BODY_ONLY ->
+                (holder as BodyViewHolder).noteBodyView.text = currentNote.body
+        }
 
         holder.itemView.setOnClickListener {
             val editOrViewIntent = Intent(it.context, CreateNoteActivity::class.java)
