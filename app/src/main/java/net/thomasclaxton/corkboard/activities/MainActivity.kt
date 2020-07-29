@@ -150,7 +150,6 @@ class MainActivity : AppCompatActivity() {
             for (note: Note in NOTES_ARRAY) {
                 if (note.isSelected) {
                     note.isSelected = false
-                    mAdapter.notifyDataSetChanged()
                 }
             }
             currentMenu = R.menu.menu_main
