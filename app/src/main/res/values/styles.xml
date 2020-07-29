@@ -1,20 +1,22 @@
 <resources>
-    <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorLightPrimary</item>
-        <item name="colorPrimaryDark">@color/colorLightPrimaryDark</item>
-        <item name="colorAccent">@color/colorLightAccent</item>
-    </style>
+<!--    <style name="LightTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+<!--        <item name="colorPrimary">@color/colorLightPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorLightPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorLightAccent</item>-->
+<!--    </style>-->
 
-<!--    <style name="DarkTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+<!--    <style name="LightTheme.NoActionBar">-->
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
+<!--    </style>-->
+
+<!--    <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+<!--    <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+
     <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">@color/colorDarkPrimary</item>
-        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
-        <item name="colorAccent">@color/colorDarkAccent</item>
-    </style>
-
-    <style name="LightTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+<!--        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>-->
+        <item name="colorSecondary">@color/colorDarkAccent</item>
     </style>
 
     <style name="DarkTheme.NoActionBar">
@@ -22,12 +24,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-<!--    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-<!--    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />-->
     <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
     <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
 
+    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.DayNight.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AlertButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertButton</item>
+    </style>
+
+    <style name="AlertButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/colorDarkAccent</item>
+    </style>
 </resources>

@@ -1,11 +1,11 @@
 package net.thomasclaxton.corkboard.fragments
 
-import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.activities.CreateNoteActivity
 import java.lang.IllegalStateException
@@ -21,7 +21,7 @@ class NewItemDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val builder = AlertDialog.Builder(it, R.style.DarkTheme_NoActionBar)
+            val builder = MaterialAlertDialogBuilder(it, R.style.AlertDialogTheme)
             builder.setMessage("Choose type:")
                 .setPositiveButton("Note") { _, _ ->
                     val newNoteIntent = Intent(context, CreateNoteActivity::class.java)
