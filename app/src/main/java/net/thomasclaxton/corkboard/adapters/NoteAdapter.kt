@@ -18,6 +18,7 @@ private const val TAG = "NoteListAdapter"
 private const val NOTE = 1
 private const val TITLE_ONLY = 2
 private const val BODY_ONLY = 3
+private var SELECTING: Boolean = false
 
 class NoteListAdapter internal constructor (context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -82,11 +83,6 @@ class NoteListAdapter internal constructor (context: Context) :
     /** Called on adapter.notifyDataSetChanged() **/
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentNote: Note = mNotes[position]
-        holder.itemView.let {
-            // TODO: Maybe this could use cleaning up
-//            (it.findViewById(R.id.cardView) as MaterialCardView).strokeColor = Color.BLACK
-            (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 0
-        }
 
         when (holder.itemViewType) {
             NOTE ->
@@ -101,28 +97,42 @@ class NoteListAdapter internal constructor (context: Context) :
                 (holder as BodyViewHolder).noteBodyView.text = currentNote.body
         }
 
-        holder.itemView.setOnClickListener {
-            val editOrViewIntent = Intent(it.context, CreateNoteActivity::class.java)
-            editOrViewIntent.putExtra(it.context.getString(R.string.extras_note), currentNote)
-            editOrViewIntent.putExtra(it.context.getString(R.string.extras_request_code), 2)
+        when (SELECTING) {
+            true ->
+                holder.itemView.setOnClickListener { currentNote.toggleSelection(holder.itemView) }
+            false ->
+                holder.itemView.let {
+                    (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 0
+                    it.setOnClickListener { view ->
+                        val editOrViewIntent = Intent(view.context, CreateNoteActivity::class.java)
+                        editOrViewIntent.putExtra(view.context.getString(R.string.extras_note), currentNote)
+                        editOrViewIntent.putExtra(view.context.getString(R.string.extras_request_code), 2)
 
-            val context = it.context as Activity
-            context.startActivityForResult(editOrViewIntent, 2)
+                        val context = it.context as Activity
+                        context.startActivityForResult(editOrViewIntent, 2)
+                    }
+                }
         }
 
         holder.itemView.setOnLongClickListener {
-            // add this note to the selection pool
-            currentNote.isSelected = true
-//            it.setBackgroundColor(Color.WHITE)
-//            (it.findViewById(R.id.cardView) as MaterialCardView).strokeColor = Color.WHITE
-            (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 4
+            currentNote.toggleSelection(it)
 
             // change the MainActivity menu to the selection menu
             MainActivity.currentMenu = R.menu.menu_select
             (it.context as Activity).invalidateOptionsMenu()
 
+            // set a flag to change the onClickListener to select notes rather than edit/view
+            SELECTING = true
+            notifyDataSetChanged()
+
             true
         }
+    }
+
+    fun undoSelections() {
+        // TODO: called from onBackPressed(), on delete, on new note IF SELECTING == true
+        SELECTING = false
+        notifyDataSetChanged()
     }
 
     internal fun setNotes(notes: List<Note>) {

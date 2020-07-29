@@ -154,6 +154,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             currentMenu = R.menu.menu_main
+            mAdapter.undoSelections()
             invalidateOptionsMenu()
         } else {
             super.onBackPressed()
@@ -175,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onCloseClick(view: MenuItem) {
         currentMenu = R.menu.menu_main
-        mAdapter.notifyDataSetChanged()
+        mAdapter.undoSelections()
         invalidateOptionsMenu()
     }
 
@@ -186,6 +187,7 @@ class MainActivity : AppCompatActivity() {
                 noteViewModel.delete(it.uid)
             }
         currentMenu = R.menu.menu_main
+        mAdapter.undoSelections()
         invalidateOptionsMenu()
     }
 }
