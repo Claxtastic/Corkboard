@@ -21,7 +21,6 @@ class NewItemDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            // Use the Builder class for convenient dialog construction
             val builder = AlertDialog.Builder(it, R.style.DarkTheme_NoActionBar)
             builder.setMessage("Choose type:")
                 .setPositiveButton("Note") { _, _ ->
