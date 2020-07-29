@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter.models
+package net.thomasclaxton.corkboard.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,8 +1,8 @@
-package net.thomasclaxton.noter.databases
+package net.thomasclaxton.corkboard.databases
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.corkboard.models.Note
 
 @Dao
 interface NoteDao {

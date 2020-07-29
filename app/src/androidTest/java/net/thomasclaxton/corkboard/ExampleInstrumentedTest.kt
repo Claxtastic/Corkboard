@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.corkboard
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

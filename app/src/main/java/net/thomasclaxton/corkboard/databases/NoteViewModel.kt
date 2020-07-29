@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter.databases
+package net.thomasclaxton.corkboard.databases
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.thomasclaxton.noter.activities.MainActivity
-import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.corkboard.activities.MainActivity
+import net.thomasclaxton.corkboard.models.Note
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
 

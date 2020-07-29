@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter
+package net.thomasclaxton.corkboard
 
 import org.junit.Test
 import org.junit.Assert.*

@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter.activities
+package net.thomasclaxton.corkboard.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,11 +11,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import net.thomasclaxton.noter.fragments.NewItemDialogFragment
-import net.thomasclaxton.noter.models.Note
-import net.thomasclaxton.noter.adapters.NoteListAdapter
-import net.thomasclaxton.noter.R
-import net.thomasclaxton.noter.databases.NoteViewModel
+import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
+import net.thomasclaxton.corkboard.models.Note
+import net.thomasclaxton.corkboard.adapters.NoteListAdapter
+import net.thomasclaxton.corkboard.R
+import net.thomasclaxton.corkboard.databases.NoteViewModel
 
 private const val TAG = "MainActivity"
 

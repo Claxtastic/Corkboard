@@ -1,4 +1,4 @@
-package net.thomasclaxton.noter.databases
+package net.thomasclaxton.corkboard.databases
 
 import android.content.Context
 import androidx.room.Database
@@ -8,7 +8,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import net.thomasclaxton.noter.models.Note
+import net.thomasclaxton.corkboard.models.Note
 
 private val TAG = "AppDatabase"
 

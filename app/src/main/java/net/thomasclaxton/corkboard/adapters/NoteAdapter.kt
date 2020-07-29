@@ -1,19 +1,18 @@
-package net.thomasclaxton.noter.adapters
+package net.thomasclaxton.corkboard.adapters
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import net.thomasclaxton.noter.R
-import net.thomasclaxton.noter.activities.CreateNoteActivity
-import net.thomasclaxton.noter.models.Note
-import net.thomasclaxton.noter.activities.MainActivity
+import com.google.android.material.card.MaterialCardView
+import net.thomasclaxton.corkboard.R
+import net.thomasclaxton.corkboard.activities.CreateNoteActivity
+import net.thomasclaxton.corkboard.models.Note
+import net.thomasclaxton.corkboard.activities.MainActivity
 
 private const val TAG = "NoteListAdapter"
 private const val NOTE = 1
@@ -25,7 +24,6 @@ class NoteListAdapter internal constructor (context: Context) :
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var mNotes = MainActivity.NOTES_ARRAY
-    private lateinit var mParent: ViewGroup
     private lateinit var mRecyclerView: RecyclerView
 
     inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -81,10 +79,13 @@ class NoteListAdapter internal constructor (context: Context) :
         }
     }
 
+    /** Called on adapter.notifyDataSetChanged() **/
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentNote: Note = mNotes[position]
         holder.itemView.let {
-            it.setBackgroundColor(ContextCompat.getColor(it.context, R.color.colorDarkBackground))
+            // TODO: Maybe this could use cleaning up
+//            (it.findViewById(R.id.cardView) as MaterialCardView).strokeColor = Color.BLACK
+            (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 0
         }
 
         when (holder.itemViewType) {
@@ -112,7 +113,9 @@ class NoteListAdapter internal constructor (context: Context) :
         holder.itemView.setOnLongClickListener {
             // add this note to the selection pool
             currentNote.isSelected = true
-            it.setBackgroundColor(Color.WHITE)
+//            it.setBackgroundColor(Color.WHITE)
+//            (it.findViewById(R.id.cardView) as MaterialCardView).strokeColor = Color.WHITE
+            (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 4
 
             // change the MainActivity menu to the selection menu
             MainActivity.currentMenu = R.menu.menu_select

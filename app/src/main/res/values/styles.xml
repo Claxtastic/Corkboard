@@ -5,7 +5,8 @@
         <item name="colorAccent">@color/colorLightAccent</item>
     </style>
 
-    <style name="DarkTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+<!--    <style name="DarkTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">-->
+    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight">
         <item name="colorPrimary">@color/colorDarkPrimary</item>
         <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
         <item name="colorAccent">@color/colorDarkAccent</item>
@@ -24,7 +25,9 @@
     <style name="LightTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="LightTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+<!--    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+<!--    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />-->
+    <style name="DarkTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    <style name="DarkTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Dark" />
 
 </resources>
