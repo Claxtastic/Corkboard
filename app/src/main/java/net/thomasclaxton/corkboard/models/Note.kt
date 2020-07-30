@@ -31,4 +31,11 @@ data class Note(
             (view.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 0
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        return this.uid == (other as Note).uid
+    }
 }

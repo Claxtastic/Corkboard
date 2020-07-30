@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = object : GridLayoutManager(this, 2) {
+        recyclerView.layoutManager = object : StaggeredGridLayoutManager(2, 1) {
             override fun onLayoutCompleted(state: RecyclerView.State?) {
                 super.onLayoutCompleted(state)
                 // attach swipe helper to RecyclerView only when the layout is completed

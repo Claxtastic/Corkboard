@@ -58,20 +58,14 @@ class NoteListAdapter internal constructor (context: Context) :
         when (viewType) {
             NOTE -> {
                 val itemView = inflater.inflate(R.layout.recyclerview_note_item, parent, false)
-                val height: Int = parent.measuredHeight / 4
-                itemView.minimumHeight = height
                 return NoteViewHolder(itemView)
             }
             TITLE_ONLY -> {
                 val itemView = inflater.inflate(R.layout.recyclerview_title_item, parent, false)
-                val height: Int = parent.measuredHeight / 4
-                itemView.minimumHeight = height
                 return TitleViewHolder(itemView)
             }
             BODY_ONLY -> {
                 val itemView = inflater.inflate(R.layout.recyclerview_body_item, parent, false)
-                val height: Int = parent.measuredHeight / 4
-                itemView.minimumHeight = height
                 return BodyViewHolder(itemView)
             }
             else -> {
