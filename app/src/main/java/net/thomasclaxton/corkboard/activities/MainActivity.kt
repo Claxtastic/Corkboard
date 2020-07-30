@@ -1,5 +1,6 @@
 package net.thomasclaxton.corkboard.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +9,6 @@ import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -23,14 +23,10 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        /**
-         * The master list which contains all notes currently in database.
-         */
-        var NOTES_ARRAY: ArrayList<Note> = ArrayList<Note>()
+        /** The master list which contains all notes currently in database. **/
+        var NOTES_ARRAY: ArrayList<Note> = ArrayList()
 
-        /**
-         * Menu for this activity. Changes depending on whether a note is selected.
-         */
+        /** Menu for this activity. Changes depending on whether a note is selected. **/
         var currentMenu: Int = R.menu.menu_main
     }
 
@@ -80,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel(adapter: NoteListAdapter) {
-        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this!!.application)).get(
+        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
             NoteViewModel::class.java
         )
 
@@ -95,19 +91,25 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 1) {
-            // new note was created
-            saveNewNote(data)
-        } else if (requestCode == 2) {
-            // existing note was edited
-            saveEditedNote(data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 1) {
+                // new note was created
+                saveNewNote(data)
+            } else if (requestCode == 2) {
+                // existing note was edited
+                saveEditedNote(data)
+            }
         }
+//        if (resultCode == Activity.RESULT_CANCELED) {
+//            // note was viewed but not edited
+//            Log.d(TAG, ": it worked");
+//        }
     }
 
     private fun saveNewNote(data: Intent?) {
         if (data?.extras != null) {
-            data?.extras!!.getSerializable(getString(R.string.extras_note))
-            val noteBundle: Bundle = data?.extras!!
+            data.extras!!.getSerializable(getString(R.string.extras_note))
+            val noteBundle: Bundle = data.extras!!
             noteBundle.getSerializable(getString(R.string.extras_note)).let {
                 noteViewModel.insert(it as Note)
             }

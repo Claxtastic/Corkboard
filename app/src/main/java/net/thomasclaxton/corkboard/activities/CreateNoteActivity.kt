@@ -8,7 +8,6 @@ import android.widget.EditText
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.R
 
-private const val RESULT_EDIT: Int = 2
 private const val TAG = "CreateNoteActivity"
 
 class CreateNoteActivity : AppCompatActivity() {
@@ -73,13 +72,18 @@ class CreateNoteActivity : AppCompatActivity() {
                 val bundle = Bundle()
                 val editedNote: Note = intent.getSerializableExtra(getString(R.string.extras_note)) as Note
 
-                // TODO: Only change fields if they have been changed
-                editedNote.title = titleText
-                editedNote.body = bodyText
+                if (titleText != editedNote.title || bodyText != editedNote.body) {
+                    // the note's contents were edited
+                    editedNote.title = titleText
+                    editedNote.body = bodyText
 
-                bundle.putSerializable(getString(R.string.extras_note), editedNote)
-                it.putExtras(bundle)
-                setResult(RESULT_EDIT, it)
+                    bundle.putSerializable(getString(R.string.extras_note), editedNote)
+                    it.putExtras(bundle)
+                    setResult(Activity.RESULT_OK, it)
+                } else {
+                    // nothing was changed
+                    setResult(Activity.RESULT_CANCELED, it)
+                }
             }
         } else {
             // user backspaced all the fields of this note
