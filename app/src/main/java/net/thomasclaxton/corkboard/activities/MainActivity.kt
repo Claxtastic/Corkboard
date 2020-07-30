@@ -100,10 +100,6 @@ class MainActivity : AppCompatActivity() {
                 saveEditedNote(data)
             }
         }
-//        if (resultCode == Activity.RESULT_CANCELED) {
-//            // note was viewed but not edited
-//            Log.d(TAG, ": it worked");
-//        }
     }
 
     private fun saveNewNote(data: Intent?) {
@@ -150,11 +146,6 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (currentMenu == R.menu.menu_select) {
             // the selection menu is active, so 1 >= note must be selected
-            for (note: Note in NOTES_ARRAY) {
-                if (note.isSelected) {
-                    note.isSelected = false
-                }
-            }
             currentMenu = R.menu.menu_main
             mAdapter.undoSelections()
             invalidateOptionsMenu()
@@ -169,6 +160,13 @@ class MainActivity : AppCompatActivity() {
         //     - List
         //     - Reminder
         // (these can be converted in the editor as well)
+        if (currentMenu == R.menu.menu_select) {
+            // undo selection because we are creating a new note
+            currentMenu = R.menu.menu_main
+            mAdapter.undoSelections()
+            invalidateOptionsMenu()
+        }
+
         val dialogFragment =
             NewItemDialogFragment.newInstance()
         val fragmentManager = supportFragmentManager.beginTransaction()

@@ -110,7 +110,6 @@ class NoteListAdapter internal constructor (context: Context) :
 
         holder.itemView.setOnLongClickListener {
             currentNote.toggleSelection(it)
-
             // change the MainActivity menu to the selection menu
             MainActivity.currentMenu = R.menu.menu_select
             (it.context as Activity).invalidateOptionsMenu()
@@ -124,7 +123,11 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     fun undoSelections() {
-        // TODO: called from onBackPressed(), on delete, on new note IF SELECTING == true
+        for (note: Note in MainActivity.NOTES_ARRAY) {
+            if (note.isSelected) {
+                note.isSelected = false
+            }
+        }
         SELECTING = false
         notifyDataSetChanged()
     }

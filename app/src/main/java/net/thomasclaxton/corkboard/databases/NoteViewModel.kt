@@ -20,9 +20,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         allNotes = repository.allNotes
     }
 
-    /**
-     * Launching a new coroutine to insert the data in a non-blocking way
-     */
+    /** Launching a new coroutine to insert the data in a non-blocking way **/
     fun insert(note: Note) = viewModelScope.launch(Dispatchers.IO) {
         repository.insert(note)
         MainActivity.NOTES_ARRAY.add(note)
