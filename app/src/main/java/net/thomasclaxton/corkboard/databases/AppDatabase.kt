@@ -56,7 +56,7 @@ abstract class AppDatabase : RoomDatabase() {
             super.onOpen(db)
             INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
-                    var noteDao = database.noteDao()
+                    val noteDao = database.noteDao()
                     noteDao.deleteAll()
                     loadSampleData(noteDao)
                 }

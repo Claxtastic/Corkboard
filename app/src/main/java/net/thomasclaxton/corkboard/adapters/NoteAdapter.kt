@@ -130,7 +130,6 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     internal fun setNotes(notes: List<Note>) {
-        // TODO: clean the clumsiness
         MainActivity.NOTES_ARRAY = notes as ArrayList<Note>
         mNotes = MainActivity.NOTES_ARRAY
         notifyDataSetChanged()

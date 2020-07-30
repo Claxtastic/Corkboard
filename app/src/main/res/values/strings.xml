@@ -3,9 +3,14 @@
     <string name="app_name">Cork Board</string>
     <!--main activity end-->
 
-    <!--start extras-->
+    <!--extras start-->
     <string name="extras_request_code">REQUEST_CODE</string>
     <string name="extras_note">NOTE</string>
     <string name="extras_uid">UID</string>
-    <!--end extras-->
+    <!--extras end-->
+
+    <!--hint start-->
+    <string name="hint_title">Title</string>
+    <string name="hint_body">Body</string>
+    <!--hint end-->
 </resources>
