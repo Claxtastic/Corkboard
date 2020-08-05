@@ -10,6 +10,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
@@ -47,9 +48,30 @@ class MainActivity : AppCompatActivity() {
         val adapter = NoteListAdapter(this)
 
         // Callback for swipe to delete on RecyclerView item
-        val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-                return false
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun isLongPressDragEnabled() = true
+            override fun isItemViewSwipeEnabled() = true
+
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                val dragFlags = UP or DOWN or START or END
+                val swipeFlags = LEFT or RIGHT
+                return makeMovementFlags(dragFlags, swipeFlags)
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.adapterPosition
+                val toPosition = target.adapterPosition
+                val item = NOTES_ARRAY.removeAt(fromPosition)
+                NOTES_ARRAY.add(toPosition, item)
+                recyclerView.adapter!!.notifyItemMoved(fromPosition, toPosition)
+                return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
@@ -57,9 +79,7 @@ class MainActivity : AppCompatActivity() {
                 val swipedNote = NOTES_ARRAY[position]
                 noteViewModel.delete(swipedNote.uid)
             }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
+        })
 
         itemTouchHelper.attachToRecyclerView(recyclerView)
 

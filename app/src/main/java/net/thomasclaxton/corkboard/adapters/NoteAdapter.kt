@@ -108,18 +108,18 @@ class NoteListAdapter internal constructor (context: Context) :
                 }
         }
 
-        holder.itemView.setOnLongClickListener {
-            currentNote.toggleSelection(it)
-            // change the MainActivity menu to the selection menu
-            MainActivity.currentMenu = R.menu.menu_select
-            (it.context as Activity).invalidateOptionsMenu()
-
-            // set a flag to change the onClickListener to select notes rather than edit/view
-            SELECTING = true
-            notifyDataSetChanged()
-
-            true
-        }
+//        holder.itemView.setOnLongClickListener {
+//            currentNote.toggleSelection(it)
+//            // change the MainActivity menu to the selection menu
+//            MainActivity.currentMenu = R.menu.menu_select
+//            (it.context as Activity).invalidateOptionsMenu()
+//
+//            // set a flag to change the onClickListener to select notes rather than edit/view
+//            SELECTING = true
+//            notifyDataSetChanged()
+//
+//            false
+//        }
     }
 
     fun undoSelections() {
