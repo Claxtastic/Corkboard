@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomappbar.BottomAppBar
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         var currentMenu: Int = R.menu.menu_main
     }
 
-    private lateinit var mBottomNavigation: BottomNavigationView
+    private lateinit var mBottomAppBar: BottomAppBar
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mNoteViewModel: NoteViewModel
 
@@ -42,31 +42,35 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        setupBottomNavigation()
+        setupBottomAppBar()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
     }
 
-    private fun setupBottomNavigation() {
-//        mBottomNavigation = findViewById(R.id.bottomAppBar)
+    private fun setupBottomAppBar() {
+        mBottomAppBar = findViewById(R.id.bottomAppBar)
 
-//        mBottomNavigation.setOnNavigationItemSelectedListener {
-//            when (it.itemId) {
-//                R.id.navigation_home -> {
-//                    Toast.makeText(applicationContext, "HOME", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.navigation_sms -> {
-//                    Toast.makeText(applicationContext, "SMS", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//                R.id.navigation_notifications -> {
-//                    Toast.makeText(applicationContext, "NOTIF", Toast.LENGTH_SHORT).show()
-//                    true
-//                }
-//            }
-//            false
-//        }
+        mBottomAppBar.setNavigationOnClickListener {
+            // handle drawer press
+        }
+
+        mBottomAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.navigation_notes -> {
+                    Toast.makeText(applicationContext, "Showing notes only", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.navigation_lists -> {
+                    Toast.makeText(applicationContext, "Showing lists only", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.navigation_reminders -> {
+                    Toast.makeText(applicationContext, "Showing reminders only", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
+            true
+        }
     }
 
     private fun setupRecyclerView(): NoteListAdapter {
