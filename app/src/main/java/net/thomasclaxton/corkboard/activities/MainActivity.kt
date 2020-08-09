@@ -7,17 +7,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
-import net.thomasclaxton.corkboard.databases.NoteViewModel
+import net.thomasclaxton.corkboard.viewmodels.NoteViewModel
 
 private const val TAG = "MainActivity"
 
@@ -31,16 +33,40 @@ class MainActivity : AppCompatActivity() {
         var currentMenu: Int = R.menu.menu_main
     }
 
-    private lateinit var noteViewModel: NoteViewModel
+    private lateinit var mBottomNavigation: BottomNavigationView
     private lateinit var mAdapter: NoteListAdapter
+    private lateinit var mNoteViewModel: NoteViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        setupBottomNavigation()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
+    }
+
+    private fun setupBottomNavigation() {
+//        mBottomNavigation = findViewById(R.id.bottomAppBar)
+
+//        mBottomNavigation.setOnNavigationItemSelectedListener {
+//            when (it.itemId) {
+//                R.id.navigation_home -> {
+//                    Toast.makeText(applicationContext, "HOME", Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//                R.id.navigation_sms -> {
+//                    Toast.makeText(applicationContext, "SMS", Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//                R.id.navigation_notifications -> {
+//                    Toast.makeText(applicationContext, "NOTIF", Toast.LENGTH_SHORT).show()
+//                    true
+//                }
+//            }
+//            false
+//        }
     }
 
     private fun setupRecyclerView(): NoteListAdapter {
@@ -77,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
                 val swipedNote = NOTES_ARRAY[position]
-                noteViewModel.delete(swipedNote.uid)
+                mNoteViewModel.delete(swipedNote.uid)
             }
         })
 
@@ -96,11 +122,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel(adapter: NoteListAdapter) {
-        noteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
+        mNoteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
             NoteViewModel::class.java
         )
 
-        noteViewModel.allNotes.observe(
+        mNoteViewModel.allNotes.observe(
             this,
             Observer { notes ->
                 notes?.let { adapter.setNotes(notes) }
@@ -127,7 +153,7 @@ class MainActivity : AppCompatActivity() {
             data.extras!!.getSerializable(getString(R.string.extras_note))
             val noteBundle: Bundle = data.extras!!
             noteBundle.getSerializable(getString(R.string.extras_note)).let {
-                noteViewModel.insert(it as Note)
+                mNoteViewModel.insert(it as Note)
             }
         }
     }
@@ -136,12 +162,12 @@ class MainActivity : AppCompatActivity() {
         if (data?.extras!!.getSerializable(getString(R.string.extras_note)) != null) {
             val editedNodeBundle: Bundle = data.extras!!
             editedNodeBundle.getSerializable(getString(R.string.extras_note)).let {
-                noteViewModel.update(it as Note)
+                mNoteViewModel.update(it as Note)
             }
         } else {
             // all the fields of this note were backspaced
             data.getStringExtra(getString(R.string.extras_uid))!!.let {
-                noteViewModel.delete(it)
+                mNoteViewModel.delete(it)
             }
         }
     }
@@ -204,7 +230,7 @@ class MainActivity : AppCompatActivity() {
         NOTES_ARRAY
             .filter { it.isSelected }
             .forEach {
-                noteViewModel.delete(it.uid)
+                mNoteViewModel.delete(it.uid)
             }
         currentMenu = R.menu.menu_main
         mAdapter.undoSelections()
