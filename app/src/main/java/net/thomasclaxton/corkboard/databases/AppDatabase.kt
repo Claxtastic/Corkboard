@@ -9,16 +9,20 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.thomasclaxton.corkboard.interfaces.NoteDao
+import net.thomasclaxton.corkboard.interfaces.NoteListDao
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.util.DataConverters
 
 private val TAG = "AppDatabase"
 
-@Database(entities = [Note::class, NoteList::class], version = 3)
+@Database(entities = [Note::class, NoteList::class], version = 4)
 @TypeConverters(DataConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
+
+    abstract fun noteListDao(): NoteListDao
 
     companion object {
         @Volatile

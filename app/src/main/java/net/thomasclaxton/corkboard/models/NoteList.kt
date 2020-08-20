@@ -1,28 +1,28 @@
 package net.thomasclaxton.corkboard.models
 
 import android.view.View
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
-import com.google.android.material.card.MaterialCardView
-import net.thomasclaxton.corkboard.R
+import androidx.room.*
+import net.thomasclaxton.corkboard.interfaces.Notable
+import net.thomasclaxton.corkboard.util.DataConverters
 import java.io.Serializable
 import java.util.*
 
 @Entity
 data class NoteList(
     @ColumnInfo(name="title") var title: String,
-    @ColumnInfo(name="items") var items: List<String>
-) : Serializable {
+
+    @ColumnInfo(name="items")
+//    @TypeConverters(DataConverters::class)
+    var items: List<NoteListItem>
+) : Notable {
 
     @PrimaryKey
-    var uid: String = UUID.randomUUID().toString()
+    override var uid: String = UUID.randomUUID().toString()
 
     @Ignore
-    var isSelected: Boolean = false
+    override var isSelected: Boolean = false
 
-    fun toggleSelection(view: View) {
+    override fun toggleSelection(view: View) {
 //        isSelected = !isSelected
 //        if (isSelected) {
 //            (view.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 4

@@ -1,4 +1,4 @@
-package net.thomasclaxton.corkboard.databases
+package net.thomasclaxton.corkboard.interfaces
 
 import androidx.lifecycle.LiveData
 import androidx.room.*

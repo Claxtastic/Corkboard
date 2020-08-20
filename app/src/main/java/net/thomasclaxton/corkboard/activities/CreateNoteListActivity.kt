@@ -25,7 +25,7 @@ class CreateNoteListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() : NoteListItemAdapter {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview_list_items)
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewListItems)
         val adapter = NoteListItemAdapter(this)
 
         recyclerView.adapter = adapter

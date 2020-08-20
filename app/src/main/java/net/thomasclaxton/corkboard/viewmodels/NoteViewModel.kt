@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.thomasclaxton.corkboard.activities.MainActivity
 import net.thomasclaxton.corkboard.databases.AppDatabase
-import net.thomasclaxton.corkboard.databases.NoteRepository
+import net.thomasclaxton.corkboard.repositories.NoteRepository
 import net.thomasclaxton.corkboard.models.Note
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
@@ -39,7 +39,6 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     fun delete(uid: String) = viewModelScope.launch(Dispatchers.IO) {
         repository.delete(uid)
-
         MainActivity.NOTES_ARRAY.filter { it.uid != uid }
     }
 

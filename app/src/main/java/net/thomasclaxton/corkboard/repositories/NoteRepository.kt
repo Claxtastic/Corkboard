@@ -1,6 +1,7 @@
-package net.thomasclaxton.corkboard.databases
+package net.thomasclaxton.corkboard.repositories
 
 import androidx.lifecycle.LiveData
+import net.thomasclaxton.corkboard.interfaces.NoteDao
 import net.thomasclaxton.corkboard.models.Note
 
 class NoteRepository(private val noteDao: NoteDao) {

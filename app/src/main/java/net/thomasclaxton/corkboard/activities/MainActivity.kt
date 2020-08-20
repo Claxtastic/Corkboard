@@ -19,6 +19,8 @@ import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
+import net.thomasclaxton.corkboard.interfaces.Notable
+import net.thomasclaxton.corkboard.viewmodels.NoteListViewModel
 import net.thomasclaxton.corkboard.viewmodels.NoteViewModel
 
 private const val TAG = "MainActivity"
@@ -27,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         /** The master list which contains all notes currently in database. **/
-        var NOTES_ARRAY: ArrayList<Note> = ArrayList()
+        var NOTES_ARRAY: ArrayList<Notable> = ArrayList()
 
         /** Menu for this activity. Changes depending on whether a note is selected. **/
         var currentMenu: Int = R.menu.menu_main
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBottomAppBar: BottomAppBar
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mNoteViewModel: NoteViewModel
+    private lateinit var mNoteListViewModel: NoteListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
-        setupViewModel(mAdapter)
+        setupViewModels(mAdapter)
     }
 
     private fun setupBottomAppBar() {
@@ -125,15 +128,26 @@ class MainActivity : AppCompatActivity() {
         return adapter
     }
 
-    private fun setupViewModel(adapter: NoteListAdapter) {
+    private fun setupViewModels(adapter: NoteListAdapter) {
         mNoteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
             NoteViewModel::class.java
+        )
+
+        mNoteListViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
+            NoteListViewModel::class.java
         )
 
         mNoteViewModel.allNotes.observe(
             this,
             Observer { notes ->
                 notes?.let { adapter.setNotes(notes) }
+            }
+        )
+
+        mNoteListViewModel.allNoteLists.observe(
+            this,
+            Observer { noteLists ->
+                noteLists?.let { adapter.setNotes(noteLists) }
             }
         )
     }

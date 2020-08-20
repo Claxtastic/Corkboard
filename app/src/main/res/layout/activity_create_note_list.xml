@@ -7,7 +7,7 @@
     tools:context="net.thomasclaxton.corkboard.activities.CreateNoteListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_list_items"
+        android:id="@+id/recyclerViewListItems"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -17,7 +17,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNoteListTitle"
-        tools:listitem="@layout/recyclerview_note_list_item">
+        tools:listitem="@layout/row_note_list_item">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -25,13 +25,13 @@
         android:id="@+id/editTextNoteListTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="4dp"
-        android:ems="10"
-        android:hint="@string/hint_title"
-        android:focusable="true"
-        android:inputType="textCapSentences|textMultiLine"
         android:autofillHints="no"
+        android:ems="10"
+        android:focusable="true"
+        android:hint="@string/hint_title"
+        android:inputType="textCapSentences|textMultiLine"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
