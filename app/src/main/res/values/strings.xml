@@ -12,5 +12,6 @@
     <!--hint start-->
     <string name="hint_title">Title</string>
     <string name="hint_body">Body</string>
+    <string name="hint_item">Item</string>
     <!--hint end-->
 </resources>

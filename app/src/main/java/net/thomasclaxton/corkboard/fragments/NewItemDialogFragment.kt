@@ -8,6 +8,7 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.activities.CreateNoteActivity
+import net.thomasclaxton.corkboard.activities.CreateNoteListActivity
 import java.lang.IllegalStateException
 
 class NewItemDialogFragment : DialogFragment() {
@@ -31,7 +32,10 @@ class NewItemDialogFragment : DialogFragment() {
                     activity!!.startActivityForResult(newNoteIntent, 1)
                 }
                 .setNeutralButton("List") { _, _ ->
-                    Toast.makeText(context, "List", Toast.LENGTH_SHORT).show()
+                    val newNoteListIntent = Intent(context, CreateNoteListActivity::class.java)
+//                    newNoteListIntent.putExtra("")
+
+                    activity!!.startActivity(newNoteListIntent)
                 }
                 .setNegativeButton("Reminder") { _, _ ->
                     Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show()

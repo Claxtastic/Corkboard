@@ -27,16 +27,16 @@ class NoteListAdapter internal constructor (context: Context) :
     private var mNotes = MainActivity.NOTES_ARRAY
     private lateinit var mRecyclerView: RecyclerView
 
-    inner class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
         val noteBodyView: TextView = itemView.findViewById(R.id.textViewNoteBody)
     }
 
-    inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteTitleView: TextView = itemView.findViewById(R.id.textViewNoteTitle)
     }
 
-    inner class BodyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class BodyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteBodyView: TextView = itemView.findViewById(R.id.textViewNoteBody)
     }
 
