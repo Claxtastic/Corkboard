@@ -15,7 +15,7 @@ class NoteListRepository(private val noteListDao: NoteListDao) {
     fun update(noteList: NoteList) {
         val uid: String = noteList.uid
         val newTitle: String = noteList.title
-        val newItems: List<NoteListItem> = noteList.items
+        val newItems: ArrayList<NoteListItem> = noteList.items
         noteListDao.update(uid, newTitle, newItems)
     }
 

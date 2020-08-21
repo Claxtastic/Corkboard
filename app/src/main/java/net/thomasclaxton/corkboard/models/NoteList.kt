@@ -12,8 +12,8 @@ data class NoteList(
     @ColumnInfo(name="title") var title: String,
 
     @ColumnInfo(name="items")
-//    @TypeConverters(DataConverters::class)
-    var items: List<NoteListItem>
+    @TypeConverters(DataConverters::class)
+    var items: ArrayList<NoteListItem>
 ) : Notable {
 
     @PrimaryKey

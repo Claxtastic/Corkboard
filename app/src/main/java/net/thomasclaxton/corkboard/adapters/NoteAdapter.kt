@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import net.thomasclaxton.corkboard.R
@@ -54,21 +55,18 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-//        TODO("Clean this up a bit")
-        if (MainActivity.NOTES_ARRAY[position] is Note) {
-            (MainActivity.NOTES_ARRAY[position] as Note).let {
-                if (it.body.isEmpty())
-                    return TITLE_ONLY
-                else if (it.title.isEmpty())
-                    return BODY_ONLY
-                else {
-                    return NOTE
+        return when (MainActivity.NOTES_ARRAY[position]) {
+            is Note -> {
+                (MainActivity.NOTES_ARRAY[position] as Note).let {
+                    when {
+                        it.body.isEmpty() -> TITLE_ONLY
+                        it.title.isEmpty() -> BODY_ONLY
+                        else -> NOTE
+                    }
                 }
             }
-        } else if (MainActivity.NOTES_ARRAY[position] is NoteList) {
-            return NOTE_LIST
-        } else {
-            return 0
+            is NoteList -> return NOTE_LIST
+            else -> 0
         }
     }
 
@@ -119,8 +117,13 @@ class NoteListAdapter internal constructor (context: Context) :
                 (holder as NoteListViewHolder).let {
                     var noteList = currentNotable as NoteList
                     it.noteListTitle.text = noteList.title
-//                    TODO("Add the list items to the NoteLists recyclerview")
-//                    it.noteListItemsRecyclerView
+
+                    // fill the NoteList's recyclerview with the ListItems
+                    val context = it.noteListTitle.context
+                    val noteListItemAdapter = NoteListItemAdapter(context, NoteListItemAdapter.Mode.VIEW)
+                    it.noteListItemsRecyclerView.adapter = noteListItemAdapter
+                    it.noteListItemsRecyclerView.layoutManager = LinearLayoutManager(context)
+                    noteListItemAdapter.setNoteListItems(noteList.items)
                 }
             }
         }
@@ -171,6 +174,10 @@ class NoteListAdapter internal constructor (context: Context) :
         MainActivity.NOTES_ARRAY = notes as ArrayList<Notable>
         mNotes = MainActivity.NOTES_ARRAY
         notifyDataSetChanged()
+    }
+
+    fun getNotes(): List<Notable> {
+        return mNotes
     }
 
     override fun getItemCount() = mNotes.size

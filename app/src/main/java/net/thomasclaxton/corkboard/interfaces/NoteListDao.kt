@@ -16,7 +16,7 @@ interface NoteListDao {
     fun insert(noteList: NoteList)
 
     @Query("UPDATE NoteList SET title=:title, items=:items WHERE uid=:uid")
-    fun update(uid: String, title: String, items: List<NoteListItem>)
+    fun update(uid: String, title: String, items: ArrayList<NoteListItem>)
 
     @Insert
     fun insertAll(vararg noteLists: NoteList)

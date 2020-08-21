@@ -8,14 +8,14 @@ import net.thomasclaxton.corkboard.models.NoteListItem
 class DataConverters {
 
     @TypeConverter
-    fun toGson(list: List<NoteListItem>): String {
+    fun toGson(list: ArrayList<NoteListItem>): String {
         val gson = Gson()
         val type = object : TypeToken<List<NoteListItem>>() {}.type
         return gson.toJson(list, type)
     }
 
     @TypeConverter
-    fun toList(json: String): List<NoteListItem> {
+    fun toList(json: String): ArrayList<NoteListItem> {
         val gson = Gson()
         val type = object : TypeToken<List<NoteListItem>>() {}.type
         return gson.fromJson(json, type)

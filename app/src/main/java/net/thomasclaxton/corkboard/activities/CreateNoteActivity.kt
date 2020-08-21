@@ -23,7 +23,7 @@ class CreateNoteActivity : AppCompatActivity() {
             // we are editing or viewing an already created note
             (intent.getSerializableExtra(getString(R.string.extras_note)) as Note).let {
                 findViewById<EditText>(R.id.editTextNoteListTitle).setText(it.title)
-                findViewById<EditText>(R.id.editTextNoteListItem).setText(it.body)
+                findViewById<EditText>(R.id.textViewNoteListBody).setText(it.body)
             }
         }
     }
@@ -36,8 +36,8 @@ class CreateNoteActivity : AppCompatActivity() {
     }
 
     private fun saveNote() {
-        val titleText = findViewById<EditText>(R.id.editTextNoteListTitle).text.toString()
-        val bodyText = findViewById<EditText>(R.id.editTextNoteListItem).text.toString()
+        val titleText = findViewById<EditText>(R.id.editTextNoteTitle).text.toString()
+        val bodyText = findViewById<EditText>(R.id.textViewNoteListBody).text.toString()
 
         intent.getIntExtra(getString(R.string.extras_request_code), 0).let {
             if (it == 1) {

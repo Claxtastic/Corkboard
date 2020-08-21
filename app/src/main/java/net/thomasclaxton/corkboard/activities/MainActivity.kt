@@ -3,6 +3,7 @@ package net.thomasclaxton.corkboard.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -20,6 +21,7 @@ import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.interfaces.Notable
+import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.viewmodels.NoteListViewModel
 import net.thomasclaxton.corkboard.viewmodels.NoteViewModel
 
@@ -109,8 +111,10 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-                val swipedNote = NOTES_ARRAY[position]
-                mNoteViewModel.delete(swipedNote.uid)
+                when (val swipedNote = NOTES_ARRAY[position]) {
+                    is Note -> mNoteViewModel.delete(swipedNote.uid)
+                    is NoteList -> mNoteListViewModel.delete(swipedNote.uid)
+                }
             }
         })
 
@@ -140,14 +144,19 @@ class MainActivity : AppCompatActivity() {
         mNoteViewModel.allNotes.observe(
             this,
             Observer { notes ->
-                notes?.let { adapter.setNotes(notes) }
+                notes?.let {
+                    adapter.setNotes(notes)
+                }
             }
         )
 
         mNoteListViewModel.allNoteLists.observe(
             this,
             Observer { noteLists ->
-                noteLists?.let { adapter.setNotes(noteLists) }
+                noteLists?.let {
+                    NOTES_ARRAY.addAll(noteLists)
+                    adapter.setNotes(NOTES_ARRAY)
+                }
             }
         )
     }
@@ -156,37 +165,57 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
+            val notable: Notable? = getExtraAsNotable(data)
             if (requestCode == 1) {
                 // new note was created
-                saveNewNote(data)
+                when (notable) {
+                    null -> null
+                    is Note -> saveNewNote(notable)
+                    is NoteList -> saveNewNoteList(notable)
+                }
             } else if (requestCode == 2) {
                 // existing note was edited
-                saveEditedNote(data)
+                when (notable) {
+                    is Note -> saveEditedNote(notable, data)
+                    is NoteList -> saveEditedNoteList(notable, data)
+                }
             }
         }
     }
 
-    private fun saveNewNote(data: Intent?) {
-        if (data?.extras != null) {
+    private fun getExtraAsNotable(data: Intent?): Notable? {
+        return if (data?.extras != null) {
             data.extras!!.getSerializable(getString(R.string.extras_note))
-            val noteBundle: Bundle = data.extras!!
-            noteBundle.getSerializable(getString(R.string.extras_note)).let {
-                mNoteViewModel.insert(it as Note)
-            }
+            val notableBundle: Bundle = data.extras!!
+
+            notableBundle.getSerializable(getString(R.string.extras_note)) as Notable
+        } else {
+            null
         }
     }
 
-    private fun saveEditedNote(data: Intent?) {
-        if (data?.extras!!.getSerializable(getString(R.string.extras_note)) != null) {
-            val editedNodeBundle: Bundle = data.extras!!
-            editedNodeBundle.getSerializable(getString(R.string.extras_note)).let {
-                mNoteViewModel.update(it as Note)
-            }
+    private fun saveNewNote(note: Note) {
+        mNoteViewModel.insert(note)
+    }
+
+    private fun saveNewNoteList(noteList: NoteList) {
+        mNoteListViewModel.insert(noteList)
+    }
+
+    private fun saveEditedNote(note: Note?, data: Intent?) {
+        if (note != null) {
+            mNoteViewModel.update(note)
         } else {
             // all the fields of this note were backspaced
-            data.getStringExtra(getString(R.string.extras_uid))!!.let {
-                mNoteViewModel.delete(it)
-            }
+            mNoteViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
+        }
+    }
+
+    private fun saveEditedNoteList(noteList: NoteList?, data: Intent?) {
+        if (noteList != null) {
+            mNoteListViewModel.update(noteList)
+        } else {
+            mNoteListViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
         }
     }
 

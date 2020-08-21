@@ -9,7 +9,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/editTextNoteListTitle"
+            android:id="@+id/editTextNoteTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -20,7 +20,7 @@
             android:autofillHints="no" />
 
         <EditText
-            android:id="@+id/editTextNoteListItem"
+            android:id="@+id/textViewNoteListBody"
             android:layout_width="match_parent"
             android:layout_height="648dp"
             android:layout_marginStart="16dp"

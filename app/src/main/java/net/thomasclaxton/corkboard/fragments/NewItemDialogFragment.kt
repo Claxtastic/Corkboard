@@ -33,9 +33,9 @@ class NewItemDialogFragment : DialogFragment() {
                 }
                 .setNeutralButton("List") { _, _ ->
                     val newNoteListIntent = Intent(context, CreateNoteListActivity::class.java)
-//                    newNoteListIntent.putExtra("")
+                    newNoteListIntent.putExtra(getString(R.string.extras_request_code), 1)
 
-                    activity!!.startActivity(newNoteListIntent)
+                    activity!!.startActivityForResult(newNoteListIntent, 1)
                 }
                 .setNegativeButton("Reminder") { _, _ ->
                     Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show()

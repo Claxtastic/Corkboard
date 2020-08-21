@@ -9,20 +9,31 @@ import androidx.recyclerview.widget.RecyclerView
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.models.NoteListItem
 
-class NoteListItemAdapter internal constructor (context: Context) :
+class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     RecyclerView.Adapter<NoteListItemAdapter.NoteListItemViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var mNoteListItems: ArrayList<NoteListItem> = ArrayList()
-    private lateinit var mRecyclerView: RecyclerView
+
+    enum class Mode {
+        CREATE, VIEW
+    }
 
     class NoteListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val noteListItemView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
+        val noteListItemView: TextView = itemView.findViewById(R.id.textViewNoteListBody)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListItemViewHolder {
-        val itemView = inflater.inflate(R.layout.row_note_list_item, parent, false)
-        return NoteListItemViewHolder(itemView)
+        return when (mode) {
+            Mode.CREATE -> {
+                val itemView = inflater.inflate(R.layout.row_create_note_list_item, parent, false)
+                NoteListItemViewHolder(itemView)
+            }
+            Mode.VIEW -> {
+                val itemView = inflater.inflate(R.layout.row_note_list_item, parent, false)
+                NoteListItemViewHolder(itemView)
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: NoteListItemViewHolder, position: Int) {
@@ -38,6 +49,15 @@ class NoteListItemAdapter internal constructor (context: Context) :
 
     fun addItem(item: String) {
         mNoteListItems.add(NoteListItem(item))
+        notifyDataSetChanged()
+    }
+
+    fun getNoteListItems(): ArrayList<NoteListItem> {
+        return mNoteListItems
+    }
+
+    fun setNoteListItems(items: ArrayList<NoteListItem>) {
+        mNoteListItems = items
         notifyDataSetChanged()
     }
 
