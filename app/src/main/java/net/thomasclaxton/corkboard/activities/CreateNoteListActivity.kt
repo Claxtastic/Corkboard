@@ -147,6 +147,6 @@ class CreateNoteListActivity : AppCompatActivity() {
     }
 
     private fun noteListIsEmpty(titleText: String, items: ArrayList<NoteListItem>) : Boolean {
-        return titleText.isEmpty() && items.isEmpty()
+        return titleText.isEmpty() || items.isEmpty()
     }
 }

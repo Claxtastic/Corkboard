@@ -20,6 +20,7 @@ import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.interfaces.Notable
 import net.thomasclaxton.corkboard.viewmodels.NotableViewModel
+import java.io.Serializable
 
 private const val TAG = "MainActivity"
 
@@ -143,23 +144,29 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == Activity.RESULT_OK) {
-            val notable: Notable? = getExtraAsNotable(data)
-            if (requestCode == 1) {
-                // new note was created
-                    saveNewNote(notable!!)
-            } else if (requestCode == 2) {
-                // existing note was edited
-                    saveEditedNote(notable, data)
+            val serializable: Serializable? = getExtraAsSerializable(data)
+            if (serializable != null) {
+                if (requestCode == 1) {
+                    // new note was created
+                    saveNewNote(serializable as Notable)
+                } else if (requestCode == 2) {
+                    // existing note was edited
+                    saveEditedNote(serializable)
                 }
             }
+        }
     }
 
-    private fun getExtraAsNotable(data: Intent?): Notable? {
+    private fun getExtraAsSerializable(data: Intent?): Serializable? {
         return if (data?.extras != null) {
             data.extras!!.getSerializable(getString(R.string.extras_note))
             val notableBundle: Bundle = data.extras!!
 
-            notableBundle.getSerializable(getString(R.string.extras_note)) as Notable
+            return if (notableBundle.getSerializable(getString(R.string.extras_note)) != null) {
+                notableBundle.getSerializable(getString(R.string.extras_note))
+            } else {
+                notableBundle.getSerializable(getString(R.string.extras_uid))
+            }
         } else {
             null
         }
@@ -169,12 +176,12 @@ class MainActivity : AppCompatActivity() {
         mNotableViewModel.insert(notable)
     }
 
-    private fun saveEditedNote(note: Notable?, data: Intent?) {
-        if (note != null) {
-            mNotableViewModel.update(note)
+    private fun saveEditedNote(serializable: Serializable) {
+        if (serializable is Notable) {
+            mNotableViewModel.update(serializable)
         } else {
             // all the fields of this note were backspaced
-            mNotableViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
+            mNotableViewModel.delete(serializable as String)
         }
     }
 
