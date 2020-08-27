@@ -3,7 +3,6 @@ package net.thomasclaxton.corkboard.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -17,13 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomappbar.BottomAppBar
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
-import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.interfaces.Notable
-import net.thomasclaxton.corkboard.models.NoteList
-import net.thomasclaxton.corkboard.viewmodels.NoteListViewModel
-import net.thomasclaxton.corkboard.viewmodels.NoteViewModel
+import net.thomasclaxton.corkboard.viewmodels.NotableViewModel
 
 private const val TAG = "MainActivity"
 
@@ -39,8 +35,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mBottomAppBar: BottomAppBar
     private lateinit var mAdapter: NoteListAdapter
-    private lateinit var mNoteViewModel: NoteViewModel
-    private lateinit var mNoteListViewModel: NoteListViewModel
+    private lateinit var mNotableViewModel: NotableViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
-        setupViewModels(mAdapter)
+        setupViewModel(mAdapter)
     }
 
     private fun setupBottomAppBar() {
@@ -111,10 +106,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-                when (val swipedNote = NOTES_ARRAY[position]) {
-                    is Note -> mNoteViewModel.delete(swipedNote.uid)
-                    is NoteList -> mNoteListViewModel.delete(swipedNote.uid)
-                }
+                mNotableViewModel.delete(NOTES_ARRAY[position].uid)
             }
         })
 
@@ -132,30 +124,16 @@ class MainActivity : AppCompatActivity() {
         return adapter
     }
 
-    private fun setupViewModels(adapter: NoteListAdapter) {
-        mNoteViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
-            NoteViewModel::class.java
+    private fun setupViewModel(adapter: NoteListAdapter) {
+        mNotableViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
+            NotableViewModel::class.java
         )
-
-        mNoteListViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
-            NoteListViewModel::class.java
-        )
-
-        mNoteViewModel.allNotes.observe(
+        
+        mNotableViewModel.getAll().observe(
             this,
             Observer { notes ->
                 notes?.let {
                     adapter.setNotes(notes)
-                }
-            }
-        )
-
-        mNoteListViewModel.allNoteLists.observe(
-            this,
-            Observer { noteLists ->
-                noteLists?.let {
-                    NOTES_ARRAY.addAll(noteLists)
-                    adapter.setNotes(NOTES_ARRAY)
                 }
             }
         )
@@ -168,19 +146,12 @@ class MainActivity : AppCompatActivity() {
             val notable: Notable? = getExtraAsNotable(data)
             if (requestCode == 1) {
                 // new note was created
-                when (notable) {
-                    null -> null
-                    is Note -> saveNewNote(notable)
-                    is NoteList -> saveNewNoteList(notable)
-                }
+                    saveNewNote(notable!!)
             } else if (requestCode == 2) {
                 // existing note was edited
-                when (notable) {
-                    is Note -> saveEditedNote(notable, data)
-                    is NoteList -> saveEditedNoteList(notable, data)
+                    saveEditedNote(notable, data)
                 }
             }
-        }
     }
 
     private fun getExtraAsNotable(data: Intent?): Notable? {
@@ -194,28 +165,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveNewNote(note: Note) {
-        mNoteViewModel.insert(note)
+    private fun saveNewNote(notable: Notable) {
+        mNotableViewModel.insert(notable)
     }
 
-    private fun saveNewNoteList(noteList: NoteList) {
-        mNoteListViewModel.insert(noteList)
-    }
-
-    private fun saveEditedNote(note: Note?, data: Intent?) {
+    private fun saveEditedNote(note: Notable?, data: Intent?) {
         if (note != null) {
-            mNoteViewModel.update(note)
+            mNotableViewModel.update(note)
         } else {
             // all the fields of this note were backspaced
-            mNoteViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
-        }
-    }
-
-    private fun saveEditedNoteList(noteList: NoteList?, data: Intent?) {
-        if (noteList != null) {
-            mNoteListViewModel.update(noteList)
-        } else {
-            mNoteListViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
+            mNotableViewModel.delete(data?.extras?.getSerializable(getString(R.string.extras_uid)) as String)
         }
     }
 
@@ -277,7 +236,7 @@ class MainActivity : AppCompatActivity() {
         NOTES_ARRAY
             .filter { it.isSelected }
             .forEach {
-                mNoteViewModel.delete(it.uid)
+                mNotableViewModel.delete(it.uid)
             }
         currentMenu = R.menu.menu_main
         mAdapter.undoSelections()
