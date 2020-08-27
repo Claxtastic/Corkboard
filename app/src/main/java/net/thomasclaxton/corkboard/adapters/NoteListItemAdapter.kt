@@ -20,7 +20,7 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     }
 
     class NoteListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val noteListItemView: TextView = itemView.findViewById(R.id.textViewNoteListBody)
+        val noteListItemView: TextView = itemView.findViewById(R.id.editTextNoteBody)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListItemViewHolder {

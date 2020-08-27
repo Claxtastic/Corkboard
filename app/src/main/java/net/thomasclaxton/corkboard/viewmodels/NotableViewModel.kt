@@ -76,8 +76,6 @@ class NotableViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private fun combineNotables(notes: LiveData<List<Note>>, noteLists: LiveData<List<NoteList>>): List<Notable> {
-        // TODO: call on both addSource blocks,
-        // get value of each LiveData, create list
         val result: ArrayList<Notable> = ArrayList()
         val notesValue = notes.value
         val noteListsValue = noteLists.value

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.activities.CreateNoteActivity
+import net.thomasclaxton.corkboard.activities.CreateNoteListActivity
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.activities.MainActivity
 import net.thomasclaxton.corkboard.interfaces.Notable
@@ -135,12 +136,21 @@ class NoteListAdapter internal constructor (context: Context) :
                 holder.itemView.let {
                     (it.findViewById(R.id.cardView) as MaterialCardView).strokeWidth = 0
                     it.setOnClickListener { view ->
-                        val editOrViewIntent = Intent(view.context, CreateNoteActivity::class.java)
-                        editOrViewIntent.putExtra(view.context.getString(R.string.extras_note), currentNotable)
-                        editOrViewIntent.putExtra(view.context.getString(R.string.extras_request_code), 2)
-
                         val context = it.context as Activity
-                        context.startActivityForResult(editOrViewIntent, 2)
+                        when (currentNotable) {
+                            is Note -> {
+                                val editOrViewIntent = Intent(view.context, CreateNoteActivity::class.java)
+                                editOrViewIntent.putExtra(view.context.getString(R.string.extras_note), currentNotable)
+                                editOrViewIntent.putExtra(view.context.getString(R.string.extras_request_code), 2)
+                                context.startActivityForResult(editOrViewIntent, 2)
+                            }
+                            is NoteList -> {
+                                val editOrViewIntent = Intent(view.context, CreateNoteListActivity::class.java)
+                                editOrViewIntent.putExtra(view.context.getString(R.string.extras_note), currentNotable)
+                                editOrViewIntent.putExtra(view.context.getString(R.string.extras_request_code), 2)
+                                context.startActivityForResult(editOrViewIntent, 2)
+                            }
+                        }
                     }
                 }
         }

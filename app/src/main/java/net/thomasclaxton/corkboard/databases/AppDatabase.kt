@@ -66,8 +66,8 @@ abstract class AppDatabase : RoomDatabase() {
                 scope.launch(Dispatchers.IO) {
                     val noteDao = database.noteDao()
                     val noteListDao = database.noteListDao()
-                    noteDao.deleteAll()
-                    noteListDao.deleteAll()
+//                    noteDao.deleteAll()
+//                    noteListDao.deleteAll()
 //                    loadSampleData(noteDao)
                 }
             }

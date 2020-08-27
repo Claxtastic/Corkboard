@@ -4,14 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_main.*
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.adapters.NoteListItemAdapter
+import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.models.NoteListItem
 
@@ -28,6 +31,27 @@ class CreateNoteListActivity : AppCompatActivity() {
 
         mAdapter = setupRecyclerView()
         mAdapter.addItem()
+        checkExtras()
+    }
+
+    private fun checkExtras() {
+        if (intent.hasExtra(getString(R.string.extras_note))) {
+            (intent.getSerializableExtra(getString(R.string.extras_note)) as NoteList).let {
+                findViewById<EditText>(R.id.editTextNoteListTitle).setText(it.title)
+                // populate the activity with all of the list items
+                for (i in 0 until it.items.size - 1) {
+                    mAdapter.addItem()
+                    mAdapter.notifyDataSetChanged()
+                }
+
+                for (i in it.items.indices) {
+                    mRecyclerView.post {
+                        val holder = mRecyclerView.findViewHolderForAdapterPosition(i) as NoteListItemAdapter.NoteListItemViewHolder
+                        holder.noteListItemView.text = it.items[i].item
+                    }
+                }
+            }
+        }
     }
 
     private fun setupRecyclerView() : NoteListItemAdapter {
