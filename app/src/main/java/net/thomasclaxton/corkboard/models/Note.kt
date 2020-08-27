@@ -8,7 +8,6 @@ import androidx.room.PrimaryKey
 import com.google.android.material.card.MaterialCardView
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.interfaces.Notable
-import java.io.Serializable
 import java.util.*
 
 @Entity

@@ -4,14 +4,13 @@ import android.view.View
 import androidx.room.*
 import net.thomasclaxton.corkboard.interfaces.Notable
 import net.thomasclaxton.corkboard.util.DataConverters
-import java.io.Serializable
 import java.util.*
 
 @Entity
 data class NoteList(
-    @ColumnInfo(name="title") var title: String,
+    @ColumnInfo(name = "title") var title: String,
 
-    @ColumnInfo(name="items")
+    @ColumnInfo(name = "items")
     @TypeConverters(DataConverters::class)
     var items: ArrayList<NoteListItem>
 ) : Notable {

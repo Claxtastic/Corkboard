@@ -4,17 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.adapters.NoteListItemAdapter
-import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.models.NoteListItem
 
@@ -54,7 +51,7 @@ class CreateNoteListActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupRecyclerView() : NoteListItemAdapter {
+    private fun setupRecyclerView(): NoteListItemAdapter {
         mRecyclerView = findViewById(R.id.recyclerViewListItems)
         val adapter = NoteListItemAdapter(this, NoteListItemAdapter.Mode.CREATE)
 
@@ -71,9 +68,9 @@ class CreateNoteListActivity : AppCompatActivity() {
     fun onCheckBoxClick(checkBoxView: View) {
         (checkBoxView as CheckBox).let {
             if (checkBoxView.isChecked) {
-                Toast.makeText(applicationContext, "Is checked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(applicationContext, "Is checked", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(applicationContext, "Is unchecked", Toast.LENGTH_SHORT).show();
+                Toast.makeText(applicationContext, "Is unchecked", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -146,7 +143,7 @@ class CreateNoteListActivity : AppCompatActivity() {
         }
     }
 
-    private fun noteListIsEmpty(titleText: String, items: ArrayList<NoteListItem>) : Boolean {
+    private fun noteListIsEmpty(titleText: String, items: ArrayList<NoteListItem>): Boolean {
         return titleText.isEmpty() || items.isEmpty()
     }
 }

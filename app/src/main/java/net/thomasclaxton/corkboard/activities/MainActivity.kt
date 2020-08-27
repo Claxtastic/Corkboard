@@ -129,7 +129,6 @@ class MainActivity : AppCompatActivity() {
         mNotableViewModel = ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application)).get(
             NotableViewModel::class.java
         )
-        
         mNotableViewModel.getAll().observe(
             this,
             Observer { notes ->
