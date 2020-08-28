@@ -29,7 +29,7 @@ class NoteListAdapter internal constructor (context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private var mNotes = MainActivity.NOTES_ARRAY
+    private var mVisibleNotes: ArrayList<Notable> = ArrayList()
     private lateinit var mRecyclerView: RecyclerView
 
     class NoteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -56,9 +56,9 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (MainActivity.NOTES_ARRAY[position]) {
+        return when (mVisibleNotes[position]) {
             is Note -> {
-                (MainActivity.NOTES_ARRAY[position] as Note).let {
+                (mVisibleNotes[position] as Note).let {
                     when {
                         it.body.isEmpty() -> TITLE_ONLY
                         it.title.isEmpty() -> BODY_ONLY
@@ -97,7 +97,7 @@ class NoteListAdapter internal constructor (context: Context) :
 
     /** Called on adapter.notifyDataSetChanged() **/
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val currentNotable: Notable = mNotes[position]
+        val currentNotable: Notable = mVisibleNotes[position]
 
         when (holder.itemViewType) {
             NOTE ->
@@ -171,7 +171,7 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     fun undoSelections() {
-        for (notable: Notable in MainActivity.NOTES_ARRAY) {
+        for (notable: Notable in MainActivity.ALL_NOTES) {
             if (notable.isSelected) {
                 notable.isSelected = false
             }
@@ -181,14 +181,9 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     fun setNotes(notes: List<Notable>) {
-        MainActivity.NOTES_ARRAY = notes as ArrayList<Notable>
-        mNotes = MainActivity.NOTES_ARRAY
+        mVisibleNotes = notes as ArrayList<Notable>
         notifyDataSetChanged()
     }
 
-    fun getNotes(): List<Notable> {
-        return mNotes
-    }
-
-    override fun getItemCount() = mNotes.size
+    override fun getItemCount() = mVisibleNotes.size
 }

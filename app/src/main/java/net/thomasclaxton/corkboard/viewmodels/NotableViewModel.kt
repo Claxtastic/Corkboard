@@ -40,7 +40,7 @@ class NotableViewModel(application: Application) : AndroidViewModel(application)
             is Note -> noteRepository.insert(notable)
             is NoteList -> noteListRepository.insert(notable)
         }
-        MainActivity.NOTES_ARRAY.add(notable)
+        MainActivity.ALL_NOTES.add(notable)
     }
 
     fun update(notable: Notable) = viewModelScope.launch(Dispatchers.IO) {
@@ -48,15 +48,15 @@ class NotableViewModel(application: Application) : AndroidViewModel(application)
             is Note -> noteRepository.update(notable)
             is NoteList -> noteListRepository.update(notable)
         }
-        MainActivity.NOTES_ARRAY.add(MainActivity.NOTES_ARRAY.indexOf(notable), notable)
+        MainActivity.ALL_NOTES.add(MainActivity.ALL_NOTES.indexOf(notable), notable)
     }
 
     fun delete(uid: String) = viewModelScope.launch(Dispatchers.IO) {
-        when (MainActivity.NOTES_ARRAY.filter { it.uid == uid }[0]) {
+        when (MainActivity.ALL_NOTES.filter { it.uid == uid }[0]) {
             is Note -> noteRepository.delete(uid)
             is NoteList -> noteListRepository.delete(uid)
         }
-        MainActivity.NOTES_ARRAY.filter { it.uid != uid }
+        MainActivity.ALL_NOTES.filter { it.uid != uid }
     }
 
     fun getAll(): LiveData<List<Notable>> {

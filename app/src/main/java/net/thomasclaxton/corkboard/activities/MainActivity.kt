@@ -19,6 +19,8 @@ import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.interfaces.Notable
+import net.thomasclaxton.corkboard.models.Note
+import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.viewmodels.NotableViewModel
 import java.io.Serializable
 
@@ -28,10 +30,17 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         /** The master list which contains all notes currently in database. **/
-        var NOTES_ARRAY: ArrayList<Notable> = ArrayList()
+        var ALL_NOTES: ArrayList<Notable> = ArrayList()
+
+        /** Lists currently visible via the set filter. **/
+        var FILTERED_NOTES: ArrayList<Notable> = ArrayList()
 
         /** Menu for this activity. Changes depending on whether a note is selected. **/
         var currentMenu: Int = R.menu.menu_main
+    }
+
+    enum class Filter {
+        NOTE, NOTELIST, REMINDER, NONE
     }
 
     private lateinit var mBottomAppBar: BottomAppBar
@@ -52,21 +61,28 @@ class MainActivity : AppCompatActivity() {
         mBottomAppBar = findViewById(R.id.bottomAppBar)
 
         mBottomAppBar.setNavigationOnClickListener {
-            // handle drawer press
+            // TODO handle drawer press
         }
 
         mBottomAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.navigation_notes -> {
+                // TODO change appbar title with each filter type accordingly
+                R.id.filter_notes -> {
                     Toast.makeText(applicationContext, "Showing notes only", Toast.LENGTH_SHORT).show()
+                    filterByType(Filter.NOTE)
                     true
                 }
-                R.id.navigation_lists -> {
+                R.id.filter_lists -> {
                     Toast.makeText(applicationContext, "Showing lists only", Toast.LENGTH_SHORT).show()
+                    filterByType(Filter.NOTELIST)
                     true
                 }
-                R.id.navigation_reminders -> {
+                R.id.filter_reminders -> {
                     Toast.makeText(applicationContext, "Showing reminders only", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.filter_clear -> {
+                    filterByType(Filter.NONE)
                     true
                 }
             }
@@ -99,15 +115,15 @@ class MainActivity : AppCompatActivity() {
             ): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
-                val item = NOTES_ARRAY.removeAt(fromPosition)
-                NOTES_ARRAY.add(toPosition, item)
+                val item = ALL_NOTES.removeAt(fromPosition)
+                ALL_NOTES.add(toPosition, item)
                 recyclerView.adapter!!.notifyItemMoved(fromPosition, toPosition)
                 return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-                mNotableViewModel.delete(NOTES_ARRAY[position].uid)
+                mNotableViewModel.delete(ALL_NOTES[position].uid)
             }
         })
 
@@ -133,7 +149,8 @@ class MainActivity : AppCompatActivity() {
             this,
             Observer { notes ->
                 notes?.let {
-                    adapter.setNotes(notes)
+                    ALL_NOTES = notes as ArrayList<Notable>
+                    adapter.setNotes(ALL_NOTES)
                 }
             }
         )
@@ -181,6 +198,17 @@ class MainActivity : AppCompatActivity() {
         } else {
             // all the fields of this note were backspaced
             mNotableViewModel.delete(serializable as String)
+        }
+    }
+
+    private fun filterByType(filter: Filter) {
+        FILTERED_NOTES.clear()
+        FILTERED_NOTES.addAll(ALL_NOTES)
+        when (filter) {
+            Filter.NOTE -> mAdapter.setNotes(FILTERED_NOTES.filterIsInstance<Note>())
+            Filter.NOTELIST -> mAdapter.setNotes(FILTERED_NOTES.filterIsInstance<NoteList>())
+            Filter.REMINDER -> null
+            Filter.NONE -> mAdapter.setNotes(ALL_NOTES)
         }
     }
 
@@ -239,7 +267,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onDeleteClick(view: MenuItem) {
-        NOTES_ARRAY
+        ALL_NOTES
             .filter { it.isSelected }
             .forEach {
                 mNotableViewModel.delete(it.uid)
