@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -46,11 +47,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mBottomAppBar: BottomAppBar
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mNotableViewModel: NotableViewModel
+    private lateinit var mTitleTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+        mTitleTextView = findViewById(R.id.textViewTitle)
+        mTitleTextView.text = getString(R.string.app_name)
+//        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.hide()
 
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
@@ -66,22 +71,22 @@ class MainActivity : AppCompatActivity() {
 
         mBottomAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                // TODO change appbar title with each filter type accordingly
                 R.id.filter_notes -> {
-                    Toast.makeText(applicationContext, "Showing notes only", Toast.LENGTH_SHORT).show()
+                    mTitleTextView.text = "Notes"
                     filterByType(Filter.NOTE)
                     true
                 }
                 R.id.filter_lists -> {
-                    Toast.makeText(applicationContext, "Showing lists only", Toast.LENGTH_SHORT).show()
+                    mTitleTextView.text = "Lists"
                     filterByType(Filter.NOTELIST)
                     true
                 }
                 R.id.filter_reminders -> {
-                    Toast.makeText(applicationContext, "Showing reminders only", Toast.LENGTH_SHORT).show()
+                    mTitleTextView.text = "Reminders"
                     true
                 }
                 R.id.filter_clear -> {
+                    mTitleTextView.text = getString(R.string.app_name)
                     filterByType(Filter.NONE)
                     true
                 }
