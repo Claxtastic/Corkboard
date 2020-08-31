@@ -2,10 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/filter_clear"
-        android:title="Item"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/filter_notes"
         android:icon="@drawable/ic_baseline_note_24"
         android:title="Notes"
@@ -22,4 +18,9 @@
         android:icon="@drawable/ic_reminder_24"
         android:title="Reminders"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/filter_clear"
+        android:icon="@drawable/ic_clear_filters_24"
+        android:title="Item"
+        app:showAsAction="always" />
 </menu>
