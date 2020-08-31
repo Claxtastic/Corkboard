@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -72,17 +71,14 @@ class MainActivity : AppCompatActivity() {
         mBottomAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.filter_notes -> {
-//                    mTitleTextView.text = "Notes"
                     filterByType(Filter.NOTE)
                     true
                 }
                 R.id.filter_lists -> {
-//                    mTitleTextView.text = "Lists"
                     filterByType(Filter.NOTELIST)
                     true
                 }
                 R.id.filter_reminders -> {
-//                    mTitleTextView.text = "Reminders"
                     true
                 }
                 R.id.filter_clear -> {
