@@ -1,12 +1,15 @@
 package net.thomasclaxton.corkboard.activities
 
 import android.app.Activity
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
@@ -52,14 +55,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mTitleTextView = findViewById(R.id.textViewTitle)
-        mTitleTextView.text = getString(R.string.app_name)
-//        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.hide()
-
+        setSupportActionBar(findViewById(R.id.toolbar))
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
+        setupSearchView()
     }
 
     private fun setupBottomAppBar() {
@@ -72,17 +72,17 @@ class MainActivity : AppCompatActivity() {
         mBottomAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.filter_notes -> {
-                    mTitleTextView.text = "Notes"
+//                    mTitleTextView.text = "Notes"
                     filterByType(Filter.NOTE)
                     true
                 }
                 R.id.filter_lists -> {
-                    mTitleTextView.text = "Lists"
+//                    mTitleTextView.text = "Lists"
                     filterByType(Filter.NOTELIST)
                     true
                 }
                 R.id.filter_reminders -> {
-                    mTitleTextView.text = "Reminders"
+//                    mTitleTextView.text = "Reminders"
                     true
                 }
                 R.id.filter_clear -> {
@@ -217,10 +217,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupSearchView() {
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        (findViewById<SearchView>(R.id.searchView)).apply {
+            setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    mAdapter.filter(query)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    mAdapter.filter(newText)
+                    return true
+                }
+            })
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(currentMenu, menu)
         when (currentMenu) {
             R.menu.menu_select -> supportActionBar?.title = ""
+            R.menu.menu_main -> {
+            }
             else -> supportActionBar?.title = getString(R.string.app_name)
         }
 
@@ -229,7 +249,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }

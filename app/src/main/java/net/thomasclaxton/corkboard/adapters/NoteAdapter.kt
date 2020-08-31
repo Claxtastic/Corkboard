@@ -3,6 +3,7 @@ package net.thomasclaxton.corkboard.adapters
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.activities.MainActivity
 import net.thomasclaxton.corkboard.interfaces.Notable
 import net.thomasclaxton.corkboard.models.NoteList
+import net.thomasclaxton.corkboard.models.NoteListItem
 
 private const val TAG = "NoteListAdapter"
 private const val NOTE = 1
@@ -181,7 +183,34 @@ class NoteListAdapter internal constructor (context: Context) :
     }
 
     fun setNotes(notes: List<Notable>) {
-        mVisibleNotes = notes as ArrayList<Notable>
+        mVisibleNotes.clear()
+        mVisibleNotes.addAll(notes)
+        notifyDataSetChanged()
+    }
+
+    fun filter(query: String?) {
+        mVisibleNotes.clear()
+
+        if (query != null) {
+            if (query.isEmpty()) {
+                mVisibleNotes.addAll(MainActivity.ALL_NOTES)
+            } else {
+                for (notable in MainActivity.ALL_NOTES) {
+                    when (notable) {
+                        is Note -> {
+                            if (notable.title.toLowerCase().contains(query.toLowerCase()) || notable.body.toLowerCase().contains(query.toLowerCase())) {
+                                mVisibleNotes.add(notable)
+                            }
+                        }
+                        is NoteList -> {
+                            if (notable.title.toLowerCase().contains(query.toLowerCase()) || notable.items.contains(NoteListItem(query))) {
+                                mVisibleNotes.add(notable)
+                            }
+                        }
+                    }
+                }
+            }
+        }
         notifyDataSetChanged()
     }
 
