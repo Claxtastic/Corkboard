@@ -9,8 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.SearchView
 import android.widget.TextView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mAdapter: NoteListAdapter
     private lateinit var mNotableViewModel: NotableViewModel
     private lateinit var mTitleTextView: TextView
+    private lateinit var mSearchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +62,15 @@ class MainActivity : AppCompatActivity() {
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
+        mSearchView = findViewById(R.id.searchView)
         setupSearchView()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // clear the focus of the search view
+        mSearchView.clearFocus()
     }
 
     private fun setupBottomAppBar() {
@@ -157,6 +169,31 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    private fun setupSearchView() {
+        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        mSearchView.let {
+            it.setOnFocusChangeListener { view, hasFocus ->
+                if (!hasFocus) {
+                    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                    it.findViewById<EditText>(R.id.search_src_text).isCursorVisible = false
+                }
+            }
+            it.setSearchableInfo(searchManager.getSearchableInfo(componentName))
+            it.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    mAdapter.filter(query)
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    mAdapter.filter(newText)
+                    return true
+                }
+            })
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -210,24 +247,6 @@ class MainActivity : AppCompatActivity() {
             Filter.NOTELIST -> mAdapter.setNotes(FILTERED_NOTES.filterIsInstance<NoteList>())
             Filter.REMINDER -> null
             Filter.NONE -> mAdapter.setNotes(ALL_NOTES)
-        }
-    }
-
-    private fun setupSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        (findViewById<SearchView>(R.id.searchView)).apply {
-            setSearchableInfo(searchManager.getSearchableInfo(componentName))
-            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    mAdapter.filter(query)
-                    return true
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    mAdapter.filter(newText)
-                    return true
-                }
-            })
         }
     }
 
