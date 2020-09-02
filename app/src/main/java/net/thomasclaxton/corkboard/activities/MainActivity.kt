@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar))
+//        setSupportActionBar(findViewById(R.id.toolbar))
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
@@ -143,6 +143,7 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
         recyclerView.adapter = adapter
+        recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = object : StaggeredGridLayoutManager(2, 1) {
             override fun onLayoutCompleted(state: RecyclerView.State?) {
                 super.onLayoutCompleted(state)
