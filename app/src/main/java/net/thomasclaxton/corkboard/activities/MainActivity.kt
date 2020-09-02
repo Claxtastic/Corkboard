@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.*
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.snackbar.Snackbar
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
@@ -135,7 +136,14 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position: Int = viewHolder.adapterPosition
-                mNotableViewModel.delete(ALL_NOTES[position].uid)
+                val notableToDelete = ALL_NOTES[position]
+                Snackbar.make(
+                    findViewById<CoordinatorLayout>(R.id.mainCoordinator),
+                    R.string.snackbar_delete,
+                    Snackbar.LENGTH_SHORT
+                ).setAction(R.string.snackbar_undo) { mNotableViewModel.insert(notableToDelete) }
+                    .setAnchorView(R.id.bottomAppBar).show()
+                mNotableViewModel.delete(notableToDelete.uid)
             }
         })
 

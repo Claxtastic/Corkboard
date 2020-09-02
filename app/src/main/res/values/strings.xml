@@ -14,4 +14,9 @@
     <string name="hint_body">Body</string>
     <string name="hint_item">Item</string>
     <!--hint end-->
+
+    <!--snackbar strings start-->
+    <string name="snackbar_delete">Deleted note</string>
+    <string name="snackbar_undo">Undo</string>
+    <!--snackbar strings end-->
 </resources>
