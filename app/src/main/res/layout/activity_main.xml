@@ -7,7 +7,6 @@
     android:id="@+id/mainCoordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
     android:fitsSystemWindows="false">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -28,28 +27,29 @@
                 android:id="@+id/searchView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
                 android:iconifiedByDefault="false"
                 android:queryHint="Search"
                 android:searchHintIcon="@null"
-                android:searchIcon="@null" />
+                android:searchIcon="@null"
+                android:queryBackground="@android:color/transparent"
+                app:queryBackground="@android:color/transparent" />
 
         </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="wrap_content"
-            android:layout_height="680dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="?attr/actionBarSize"
             tools:listitem="@layout/row_note" />
+
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomappbar.BottomAppBar
@@ -61,16 +61,12 @@
         app:fabAlignmentMode="end"
         app:itemIconTint="@color/colorDarkAccent"
         app:itemTextColor="@color/colorDarkAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_app_bar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/buttonFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:onClick="onFabClick"
         app:layout_anchor="@id/bottomAppBar"
         app:srcCompat="@drawable/ic_baseline_add_24" />
