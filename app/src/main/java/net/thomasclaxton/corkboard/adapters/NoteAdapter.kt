@@ -188,6 +188,8 @@ class NoteListAdapter internal constructor (context: Context) :
         notifyDataSetChanged()
     }
 
+    fun getNotes(): ArrayList<Notable> { return mVisibleNotes }
+
     fun filter(query: String?) {
         mVisibleNotes.clear()
 

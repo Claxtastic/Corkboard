@@ -16,12 +16,12 @@
         android:layout_gravity="center_horizontal"
         android:fitsSystemWindows="true">
 
-        <FrameLayout
-            android:id="@+id/toolbar"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/colorDarkBackground"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="16dp">
 
             <SearchView
                 android:id="@+id/searchView"
@@ -34,19 +34,19 @@
                 android:queryBackground="@android:color/transparent"
                 app:queryBackground="@android:color/transparent" />
 
-        </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:paddingBottom="?attr/actionBarSize"
             tools:listitem="@layout/row_note" />
 

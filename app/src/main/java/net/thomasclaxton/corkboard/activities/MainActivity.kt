@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        setSupportActionBar(findViewById(R.id.toolbar))
         setupBottomAppBar()
         mAdapter = setupRecyclerView()
         setupViewModel(mAdapter)
@@ -128,8 +127,8 @@ class MainActivity : AppCompatActivity() {
             ): Boolean {
                 val fromPosition = viewHolder.adapterPosition
                 val toPosition = target.adapterPosition
-                val item = ALL_NOTES.removeAt(fromPosition)
-                ALL_NOTES.add(toPosition, item)
+                val item = mAdapter.getNotes().removeAt(fromPosition)
+                mAdapter.getNotes().add(toPosition, item)
                 recyclerView.adapter!!.notifyItemMoved(fromPosition, toPosition)
                 return true
             }
