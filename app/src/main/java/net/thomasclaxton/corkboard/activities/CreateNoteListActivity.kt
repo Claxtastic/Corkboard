@@ -35,18 +35,9 @@ class CreateNoteListActivity : AppCompatActivity() {
         if (intent.hasExtra(getString(R.string.extras_note))) {
             (intent.getSerializableExtra(getString(R.string.extras_note)) as NoteList).let {
                 findViewById<EditText>(R.id.editTextNoteListTitle).setText(it.title)
-                // populate the activity with all of the list items
-                for (i in 0 until it.items.size - 1) {
-                    mAdapter.addItem()
-                    mAdapter.notifyDataSetChanged()
-                }
-
-                for (i in it.items.indices) {
-                    mRecyclerView.post {
-                        val holder = mRecyclerView.findViewHolderForAdapterPosition(i) as NoteListItemAdapter.NoteListItemViewHolder
-                        holder.noteListItemView.text = it.items[i].item
-                    }
-                }
+                val copiedNoteListItems: ArrayList<NoteListItem> = ArrayList()
+                copiedNoteListItems.addAll(it.items)
+                mAdapter.setNoteListItems(copiedNoteListItems)
             }
         }
     }
@@ -84,12 +75,7 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     private fun saveNoteList() {
         val titleText = findViewById<EditText>(R.id.editTextNoteListTitle).text.toString()
-        // get all NoteListItems from adapter
         val items: ArrayList<NoteListItem> = mAdapter.getNoteListItems()
-        for (i in items.indices) {
-            val holder: NoteListItemAdapter.NoteListItemViewHolder = mRecyclerView.findViewHolderForAdapterPosition(i) as NoteListItemAdapter.NoteListItemViewHolder
-            items[i] = NoteListItem(holder.noteListItemView.text.toString())
-        }
 
         intent.getIntExtra(getString(R.string.extras_request_code), 0).let {
             if (it == 1) {
