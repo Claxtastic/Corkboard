@@ -53,6 +53,7 @@ class CreateNoteListActivity : AppCompatActivity() {
     }
 
     fun onFabClick(view: View) {
+        // TODO: If keyboard is up, focus on new NoteListItem after added
         mAdapter.addItem()
     }
 
