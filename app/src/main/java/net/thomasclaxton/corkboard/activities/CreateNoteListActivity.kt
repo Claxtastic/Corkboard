@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
@@ -55,6 +56,10 @@ class CreateNoteListActivity : AppCompatActivity() {
     fun onFabClick(view: View) {
         // TODO: If keyboard is up, focus on new NoteListItem after added
         mAdapter.addItem()
+    }
+
+    fun onRemoveClick(view: View) {
+        mAdapter.removeItem(view.tag as Int)
     }
 
     fun onCheckBoxClick(checkBoxView: View) {

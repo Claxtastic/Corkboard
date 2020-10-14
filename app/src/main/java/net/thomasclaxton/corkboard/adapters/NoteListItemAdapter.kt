@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.thomasclaxton.corkboard.R
@@ -26,16 +27,17 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     }
 
     inner class NoteListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val noteListItemView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
+        val noteListItemTextView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
+        val noteListItemDeleteButton: ImageView = itemView.findViewById(R.id.removeListItemView)
 
         init {
-            noteListItemView.addTextChangedListener(object : TextWatcher {
+            noteListItemTextView.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) { }
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    if (noteListItemView.tag != null) {
-                        mNoteListItems[noteListItemView.tag as Int] = NoteListItem(s.toString())
+                    if (noteListItemTextView.tag != null) {
+                        mNoteListItems[noteListItemTextView.tag as Int] = NoteListItem(s.toString())
                         mNoteListItemStrings.add(s.toString())
                     }
                 }
@@ -58,8 +60,9 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
 
     override fun onBindViewHolder(holder: NoteListItemViewHolder, position: Int) {
         val currentNoteListItem: NoteListItem = mNoteListItems[position]
-        holder.noteListItemView.tag = position
-        holder.noteListItemView.text = currentNoteListItem.item
+        holder.noteListItemTextView.tag = position
+        holder.noteListItemDeleteButton.tag = position
+        holder.noteListItemTextView.text = currentNoteListItem.item
     }
 
     fun addItem() {
@@ -67,12 +70,17 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         notifyDataSetChanged()
     }
 
-    fun getNoteListItems(): ArrayList<NoteListItem> { return mNoteListItems }
+    fun removeItem(position: Int) {
+        mNoteListItems.removeAt(position)
+        notifyDataSetChanged()
+    }
 
     fun setNoteListItems(items: ArrayList<NoteListItem>) {
         mNoteListItems = items
         notifyDataSetChanged()
     }
+
+    fun getNoteListItems(): ArrayList<NoteListItem> { return mNoteListItems }
 
     override fun getItemCount() = mNoteListItems.size
 }
