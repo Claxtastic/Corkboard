@@ -11,12 +11,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import net.thomasclaxton.corkboard.R
+import net.thomasclaxton.corkboard.models.Note
+import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.models.NoteListItem
 
 private const val TAG = "NoteListItemAdapter"
 
 class NoteListItemAdapter(val context: Context, private val mode: Mode) :
-    RecyclerView.Adapter<NoteListItemAdapter.NoteListItemViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var mNoteListItems: ArrayList<NoteListItem> = ArrayList()
@@ -27,6 +29,10 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     }
 
     inner class NoteListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val noteListItemTextView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
+    }
+
+    inner class NoteListItemCreateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteListItemTextView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
         val noteListItemDeleteButton: ImageView = itemView.findViewById(R.id.removeListItemView)
 
@@ -45,11 +51,11 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteListItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (mode) {
             Mode.CREATE -> {
                 val itemView = inflater.inflate(R.layout.row_create_note_list_item, parent, false)
-                NoteListItemViewHolder(itemView)
+                NoteListItemCreateViewHolder(itemView)
             }
             Mode.VIEW -> {
                 val itemView = inflater.inflate(R.layout.row_note_list_item, parent, false)
@@ -58,11 +64,23 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         }
     }
 
-    override fun onBindViewHolder(holder: NoteListItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentNoteListItem: NoteListItem = mNoteListItems[position]
-        holder.noteListItemTextView.tag = position
-        holder.noteListItemDeleteButton.tag = position
-        holder.noteListItemTextView.text = currentNoteListItem.item
+        when(mode) {
+            Mode.CREATE -> {
+                (holder as NoteListItemCreateViewHolder).let {
+                    holder.noteListItemTextView.text = currentNoteListItem.item
+                    holder.noteListItemTextView.tag = position
+                    holder.noteListItemDeleteButton.tag = position
+                }
+            }
+            Mode.VIEW -> {
+                (holder as NoteListItemViewHolder).let {
+                    holder.noteListItemTextView.text = currentNoteListItem.item
+                    holder.noteListItemTextView.tag = position
+                }
+            }
+        }
     }
 
     fun addItem() {
