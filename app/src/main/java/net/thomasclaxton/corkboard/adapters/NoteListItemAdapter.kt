@@ -1,18 +1,19 @@
 package net.thomasclaxton.corkboard.adapters
 
 import android.content.Context
+import android.graphics.Paint
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.row_note_list_item.view.*
 import net.thomasclaxton.corkboard.R
-import net.thomasclaxton.corkboard.models.Note
-import net.thomasclaxton.corkboard.models.NoteList
 import net.thomasclaxton.corkboard.models.NoteListItem
 
 private const val TAG = "NoteListItemAdapter"
@@ -28,13 +29,15 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         CREATE, VIEW
     }
 
-    inner class NoteListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NoteListItemViewModeViewHolder(itemView: View, val adapter: NoteListItemAdapter) : RecyclerView.ViewHolder(itemView) {
         val noteListItemTextView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
+        val checkBoxView: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 
-    inner class NoteListItemCreateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class NoteListItemCreateModeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val noteListItemTextView: TextView = itemView.findViewById(R.id.editTextNoteListItem)
         val noteListItemDeleteButton: ImageView = itemView.findViewById(R.id.removeListItemView)
+        val checkBoxView: CheckBox = itemView.findViewById(R.id.checkBox)
 
         init {
             noteListItemTextView.addTextChangedListener(object : TextWatcher {
@@ -55,11 +58,11 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         return when (mode) {
             Mode.CREATE -> {
                 val itemView = inflater.inflate(R.layout.row_create_note_list_item, parent, false)
-                NoteListItemCreateViewHolder(itemView)
+                NoteListItemCreateModeViewHolder(itemView)
             }
             Mode.VIEW -> {
                 val itemView = inflater.inflate(R.layout.row_note_list_item, parent, false)
-                NoteListItemViewHolder(itemView)
+                NoteListItemViewModeViewHolder(itemView, this)
             }
         }
     }
@@ -68,19 +71,42 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         val currentNoteListItem: NoteListItem = mNoteListItems[position]
         when(mode) {
             Mode.CREATE -> {
-                (holder as NoteListItemCreateViewHolder).let {
+                (holder as NoteListItemCreateModeViewHolder).let {
                     holder.noteListItemTextView.text = currentNoteListItem.item
                     holder.noteListItemTextView.tag = position
                     holder.noteListItemDeleteButton.tag = position
+                    holder.checkBoxView.tag = position
+                    if (currentNoteListItem.isChecked) {
+                        Log.d(TAG, "onBindViewHolder: ${currentNoteListItem.item} is ${currentNoteListItem.isChecked}")
+                        holder.itemView.editTextNoteListItem.paintFlags =
+                            Paint.STRIKE_THRU_TEXT_FLAG
+                        holder.checkBoxView.isChecked = true
+                    }
                 }
             }
             Mode.VIEW -> {
-                (holder as NoteListItemViewHolder).let {
+                (holder as NoteListItemViewModeViewHolder).let {
                     holder.noteListItemTextView.text = currentNoteListItem.item
                     holder.noteListItemTextView.tag = position
+                    holder.checkBoxView.tag = position
+                    if (currentNoteListItem.isChecked) {
+                        Log.d(TAG, "onBindViewHolder: ${currentNoteListItem.item} is ${currentNoteListItem.isChecked}")
+                        holder.itemView.editTextNoteListItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                        holder.checkBoxView.isChecked = true
+                    }
                 }
             }
         }
+    }
+
+    fun handleCheckBoxClick(position: Int, checked: Boolean, holder: RecyclerView.ViewHolder) {
+        mNoteListItems[position].isChecked = checked
+        if (checked) {
+            holder.itemView.editTextNoteListItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            holder.itemView.editTextNoteListItem.paintFlags = 0
+        }
+        setNoteListItems(mNoteListItems)
     }
 
     fun addItem() {

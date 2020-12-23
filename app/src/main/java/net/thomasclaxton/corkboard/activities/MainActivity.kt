@@ -5,11 +5,13 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.TextView
@@ -22,9 +24,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_create_note_list.*
+import kotlinx.android.synthetic.main.row_note_list.view.*
 import net.thomasclaxton.corkboard.fragments.NewItemDialogFragment
 import net.thomasclaxton.corkboard.adapters.NoteListAdapter
 import net.thomasclaxton.corkboard.R
+import net.thomasclaxton.corkboard.adapters.NoteListItemAdapter
 import net.thomasclaxton.corkboard.interfaces.Notable
 import net.thomasclaxton.corkboard.models.Note
 import net.thomasclaxton.corkboard.models.NoteList
@@ -322,5 +327,19 @@ class MainActivity : AppCompatActivity() {
         currentMenu = R.menu.menu_main
         mAdapter.undoSelections()
         invalidateOptionsMenu()
+    }
+
+    fun onCheckBoxClick(checkBoxView: View) {
+        (checkBoxView as CheckBox).let {
+            val noteListItemRecyclerView = it.parent.parent as RecyclerView
+            val holder = noteListItemRecyclerView.findViewHolderForAdapterPosition(it.tag as Int) as NoteListItemAdapter.NoteListItemViewModeViewHolder
+            if (holder != null) {
+                if (it.isChecked) {
+                    holder.adapter.handleCheckBoxClick(it.tag as Int, true, holder)
+                } else {
+                    holder.adapter.handleCheckBoxClick(it.tag as Int, false, holder)
+                }
+            }
+        }
     }
 }

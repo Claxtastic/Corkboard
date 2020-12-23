@@ -4,13 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_create_note_list.*
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.adapters.NoteListItemAdapter
 import net.thomasclaxton.corkboard.models.NoteList
@@ -54,7 +53,6 @@ class CreateNoteListActivity : AppCompatActivity() {
     }
 
     fun onFabClick(view: View) {
-        // TODO: If keyboard is up, focus on new NoteListItem after added
         mAdapter.addItem()
     }
 
@@ -64,10 +62,13 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     fun onCheckBoxClick(checkBoxView: View) {
         (checkBoxView as CheckBox).let {
-            if (checkBoxView.isChecked) {
-                Toast.makeText(applicationContext, "Is checked", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(applicationContext, "Is unchecked", Toast.LENGTH_SHORT).show()
+            val holder: RecyclerView.ViewHolder? = recyclerViewListItems.findViewHolderForAdapterPosition(it.tag as Int)
+            if (holder != null) {
+                if (it.isChecked) {
+                    mAdapter.handleCheckBoxClick(it.tag as Int, true, holder)
+                } else {
+                    mAdapter.handleCheckBoxClick(it.tag as Int, false, holder)
+                }
             }
         }
     }
