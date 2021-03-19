@@ -3,12 +3,11 @@ package net.thomasclaxton.corkboard.models
 import java.io.Serializable
 import java.util.*
 
-data class NoteListItem(var item: String) : Serializable {
+data class NoteListItem(var item: String, var isChecked: Boolean = false) : Serializable {
 
     var uid: String = UUID.randomUUID().toString()
-    var isChecked: Boolean = false
 
     override fun equals(other: Any?): Boolean {
-        return this.item.toLowerCase() == (other as NoteListItem).item.toLowerCase()
+        return this.item.equals((other as NoteListItem).item, ignoreCase = true)
     }
 }

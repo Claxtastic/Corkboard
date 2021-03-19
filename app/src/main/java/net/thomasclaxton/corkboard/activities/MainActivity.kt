@@ -76,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         // clear the focus of the search view
         mSearchView.clearFocus()
+        setupViewModel(mAdapter)
     }
 
     private fun setupBottomAppBar() {
@@ -330,15 +331,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onCheckBoxClick(checkBoxView: View) {
-        (checkBoxView as CheckBox).let {
-            val noteListItemRecyclerView = it.parent.parent as RecyclerView
-            val holder = noteListItemRecyclerView.findViewHolderForAdapterPosition(it.tag as Int) as NoteListItemAdapter.NoteListItemViewModeViewHolder
+        (checkBoxView as CheckBox).let { checkBoxView ->
+            val noteListItemRecyclerView = checkBoxView.parent.parent as RecyclerView
+            val holder = noteListItemRecyclerView.findViewHolderForAdapterPosition(checkBoxView.tag as Int) as NoteListItemAdapter.NoteListItemViewModeViewHolder
+            val adapter = holder.adapter
             if (holder != null) {
-                if (it.isChecked) {
-                    holder.adapter.handleCheckBoxClick(it.tag as Int, true, holder)
+                if (checkBoxView.isChecked) {
+                    adapter.handleCheckBoxClick(checkBoxView.tag as Int, true, holder)
                 } else {
-                    holder.adapter.handleCheckBoxClick(it.tag as Int, false, holder)
+                    adapter.handleCheckBoxClick(checkBoxView.tag as Int, false, holder)
                 }
+                // find the NoteList to which the item we checked belongs to
+                val noteList = ALL_NOTES.filterIsInstance<NoteList>().firstOrNull { it.items == adapter.getNoteListItems() }
+
+                noteList?.let { saveEditedNote(noteList) }
             }
         }
     }

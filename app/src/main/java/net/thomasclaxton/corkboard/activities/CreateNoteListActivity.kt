@@ -21,6 +21,7 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     private lateinit var mAdapter: NoteListItemAdapter
     private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mOriginalNoteList: NoteList
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +34,16 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     private fun checkExtras() {
         if (intent.hasExtra(getString(R.string.extras_note))) {
-            (intent.getSerializableExtra(getString(R.string.extras_note)) as NoteList).let {
-                findViewById<EditText>(R.id.editTextNoteListTitle).setText(it.title)
-                val copiedNoteListItems: ArrayList<NoteListItem> = ArrayList()
-                copiedNoteListItems.addAll(it.items)
-                mAdapter.setNoteListItems(copiedNoteListItems)
+            (intent.getSerializableExtra(getString(R.string.extras_note)) as NoteList).let { noteList ->
+                findViewById<EditText>(R.id.editTextNoteListTitle).setText(noteList.title)
+                // save passed NoteList to compare with edited notes
+                mOriginalNoteList = noteList
+                // recreate NoteListItems in new NoteList to populate UI
+                val itemsToBeEdited: ArrayList<NoteListItem> = ArrayList()
+                noteList.items.forEach { itemToBeEdited ->
+                    itemsToBeEdited.add(NoteListItem(itemToBeEdited.item, itemToBeEdited.isChecked))
+                }
+                mAdapter.setNoteListItems(itemsToBeEdited)
             }
         }
     }
@@ -47,7 +53,8 @@ class CreateNoteListActivity : AppCompatActivity() {
         val adapter = NoteListItemAdapter(this, NoteListItemAdapter.Mode.CREATE)
 
         mRecyclerView.adapter = adapter
-        mRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        val noteListLayoutManager = LinearLayoutManager(applicationContext)
+        mRecyclerView.layoutManager = noteListLayoutManager
 
         return adapter
     }
@@ -62,12 +69,15 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     fun onCheckBoxClick(checkBoxView: View) {
         (checkBoxView as CheckBox).let {
-            val holder: RecyclerView.ViewHolder? = recyclerViewListItems.findViewHolderForAdapterPosition(it.tag as Int)
+            val noteListItemPos = it.tag as Int
+            val holder: RecyclerView.ViewHolder? = recyclerViewListItems.findViewHolderForAdapterPosition(noteListItemPos)
             if (holder != null) {
                 if (it.isChecked) {
-                    mAdapter.handleCheckBoxClick(it.tag as Int, true, holder)
+                    mAdapter.getNoteListItems()[noteListItemPos].isChecked = true
+                    mAdapter.handleCheckBoxClick(noteListItemPos, true, holder)
                 } else {
-                    mAdapter.handleCheckBoxClick(it.tag as Int, false, holder)
+                    mAdapter.getNoteListItems()[noteListItemPos].isChecked = false
+                    mAdapter.handleCheckBoxClick(noteListItemPos, false, holder)
                 }
             }
         }
@@ -110,17 +120,16 @@ class CreateNoteListActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveEditedNoteList(titleText: String, items: ArrayList<NoteListItem>) {
-        if (!noteListIsEmpty(titleText, items)) {
+    private fun saveEditedNoteList(newTitleText: String, newItems: ArrayList<NoteListItem>) {
+        if (!noteListIsEmpty(newTitleText, newItems)) {
             Intent().let {
                 val bundle = Bundle()
-                val editedNoteList: NoteList = intent.getSerializableExtra("NOTE") as NoteList
 
-                if (titleText != editedNoteList.title || items != editedNoteList.items) {
-                    editedNoteList.title = titleText
-                    editedNoteList.items = items
+                if (newTitleText != mOriginalNoteList.title || areItemsDifferent(mOriginalNoteList.items, newItems)) {
+                    mOriginalNoteList.title = newTitleText
+                    mOriginalNoteList.items = newItems
 
-                    bundle.putSerializable(getString(R.string.extras_note), editedNoteList)
+                    bundle.putSerializable(getString(R.string.extras_note), mOriginalNoteList)
                     it.putExtras(bundle)
                     setResult(Activity.RESULT_OK, it)
                 } else {
@@ -138,5 +147,15 @@ class CreateNoteListActivity : AppCompatActivity() {
 
     private fun noteListIsEmpty(titleText: String, items: ArrayList<NoteListItem>): Boolean {
         return titleText.isEmpty() || items.isEmpty()
+    }
+
+    // TODO: Make this Comparable<NoteListItem> in NoteListItem
+    private fun areItemsDifferent(original: ArrayList<NoteListItem>, edited: ArrayList<NoteListItem>): Boolean {
+        if (original.size != edited.size) return true
+        for ((index, item) in original.withIndex()) {
+            if (item.item != edited[index].item) return true
+            else if (item.isChecked != edited[index].isChecked) return true
+        }
+        return false
     }
 }

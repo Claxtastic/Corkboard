@@ -106,7 +106,7 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         } else {
             holder.itemView.editTextNoteListItem.paintFlags = 0
         }
-        setNoteListItems(mNoteListItems)
+        notifyItemChanged(position)
     }
 
     fun addItem() {
@@ -115,12 +115,16 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     }
 
     fun removeItem(position: Int) {
+        mNoteListItems[position].isChecked = false
         mNoteListItems.removeAt(position)
+        // TODO: Look at fixing notifyItemRemoved() crash
+//        notifyItemRemoved(position)
         notifyDataSetChanged()
     }
 
     fun setNoteListItems(items: ArrayList<NoteListItem>) {
-        mNoteListItems = items
+        mNoteListItems.clear()
+        mNoteListItems.addAll(items)
         notifyDataSetChanged()
     }
 
