@@ -5,8 +5,8 @@ import android.os.Bundle
 import net.thomasclaxton.corkboard.R
 
 class SearchableActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_searchable)
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_searchable)
+  }
 }

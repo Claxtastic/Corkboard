@@ -20,73 +20,73 @@ private val TAG = "AppDatabase"
 @Database(entities = [Note::class, NoteList::class], version = 4)
 @TypeConverters(DataConverters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun noteDao(): NoteDao
+  abstract fun noteDao(): NoteDao
 
-    abstract fun noteListDao(): NoteListDao
+  abstract fun noteListDao(): NoteListDao
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
+  companion object {
+    @Volatile
+    private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
-        ): AppDatabase {
-            val tempInstance =
-                INSTANCE
-            if (tempInstance != null) {
-                return tempInstance
-            }
-            synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "corkboard_database"
-                )
-                    .fallbackToDestructiveMigration()
-                    .addCallback(
-                        AppDatabaseCallback(
-                            scope
-                        )
-                    )
-                    .build()
-                INSTANCE = instance
-                return instance
-            }
-        }
+    fun getDatabase(
+      context: Context,
+      scope: CoroutineScope
+    ): AppDatabase {
+      val tempInstance =
+        INSTANCE
+      if (tempInstance != null) {
+        return tempInstance
+      }
+      synchronized(this) {
+        val instance = Room.databaseBuilder(
+          context.applicationContext,
+          AppDatabase::class.java,
+          "corkboard_database"
+        )
+          .fallbackToDestructiveMigration()
+          .addCallback(
+            AppDatabaseCallback(
+              scope
+            )
+          )
+          .build()
+        INSTANCE = instance
+        return instance
+      }
     }
+  }
 
-    private class AppDatabaseCallback(
-        private val scope: CoroutineScope
-    ) : RoomDatabase.Callback() {
+  private class AppDatabaseCallback(
+    private val scope: CoroutineScope
+  ) : RoomDatabase.Callback() {
 
-        override fun onOpen(db: SupportSQLiteDatabase) {
-            super.onOpen(db)
-            INSTANCE?.let { database ->
-                scope.launch(Dispatchers.IO) {
-                    val noteDao = database.noteDao()
-                    val noteListDao = database.noteListDao()
+    override fun onOpen(db: SupportSQLiteDatabase) {
+      super.onOpen(db)
+      INSTANCE?.let { database ->
+        scope.launch(Dispatchers.IO) {
+          val noteDao = database.noteDao()
+          val noteListDao = database.noteListDao()
 //                    noteDao.deleteAll()
 //                    noteListDao.deleteAll()
 //                    loadSampleData(noteDao)
-                }
-            }
         }
-
-        fun loadSampleData(noteDao: NoteDao) {
-            var newNote =
-                Note("A Title", "A short body")
-            noteDao.insert(newNote)
-            newNote = Note(
-                "To-do: School",
-                "Physics \n Bio \n Compsci \n History \n Spanish"
-            )
-            noteDao.insert(newNote)
-            newNote = Note(
-                "A third and final note longer title long",
-                ""
-            )
-            noteDao.insert(newNote)
-        }
+      }
     }
+
+    fun loadSampleData(noteDao: NoteDao) {
+      var newNote =
+        Note("A Title", "A short body")
+      noteDao.insert(newNote)
+      newNote = Note(
+        "To-do: School",
+        "Physics \n Bio \n Compsci \n History \n Spanish"
+      )
+      noteDao.insert(newNote)
+      newNote = Note(
+        "A third and final note longer title long",
+        ""
+      )
+      noteDao.insert(newNote)
+    }
+  }
 }

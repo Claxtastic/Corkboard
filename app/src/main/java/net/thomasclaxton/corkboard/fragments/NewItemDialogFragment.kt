@@ -3,12 +3,12 @@ package net.thomasclaxton.corkboard.fragments
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.activities.CreateNoteActivity
 import net.thomasclaxton.corkboard.activities.CreateNoteListActivity
+import net.thomasclaxton.corkboard.activities.CreateReminderActivity
 import java.lang.IllegalStateException
 
 class NewItemDialogFragment : DialogFragment() {
@@ -38,7 +38,10 @@ class NewItemDialogFragment : DialogFragment() {
           activity!!.startActivityForResult(newNoteListIntent, 1)
         }
         .setNegativeButton("Reminder") { _, _ ->
-          Toast.makeText(context, "Reminder", Toast.LENGTH_SHORT).show()
+          val newReminderIntent = Intent(context, CreateReminderActivity::class.java)
+          newReminderIntent.putExtra(getString(R.string.extras_request_code), 1)
+
+          activity!!.startActivityForResult(newReminderIntent, 1)
         }
       // Create the AlertDialog object and return it
       builder.create()

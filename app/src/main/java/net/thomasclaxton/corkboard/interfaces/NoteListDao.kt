@@ -9,21 +9,21 @@ import net.thomasclaxton.corkboard.models.NoteListItem
 
 @Dao
 interface NoteListDao {
-    @Query("SELECT * FROM NoteList")
-    fun getAll(): LiveData<List<NoteList>>
+  @Query("SELECT * FROM NoteList")
+  fun getAll(): LiveData<List<NoteList>>
 
-    @Insert
-    fun insert(noteList: NoteList)
+  @Insert
+  fun insert(noteList: NoteList)
 
-    @Query("UPDATE NoteList SET title=:title, items=:items WHERE uid=:uid")
-    fun update(uid: String, title: String, items: ArrayList<NoteListItem>)
+  @Query("UPDATE NoteList SET title=:title, items=:items WHERE uid=:uid")
+  fun update(uid: String, title: String, items: ArrayList<NoteListItem>)
 
-    @Insert
-    fun insertAll(vararg noteLists: NoteList)
+  @Insert
+  fun insertAll(vararg noteLists: NoteList)
 
-    @Query("DELETE FROM NoteList WHERE uid=:uid")
-    fun delete(uid: String)
+  @Query("DELETE FROM NoteList WHERE uid=:uid")
+  fun delete(uid: String)
 
-    @Query("DELETE FROM NoteList")
-    fun deleteAll()
+  @Query("DELETE FROM NoteList")
+  fun deleteAll()
 }
