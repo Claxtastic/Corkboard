@@ -12,4 +12,6 @@
     <color name="colorDarkAccent">#17AFF5</color>
     <color name="colorDarkBackground">#2E2E2E</color>
     <!--end dark theme colors-->
+
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>
