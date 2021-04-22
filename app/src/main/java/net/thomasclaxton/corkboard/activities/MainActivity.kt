@@ -13,9 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.SearchView
-import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.*
@@ -55,7 +53,6 @@ class MainActivity : AppCompatActivity() {
   private lateinit var mBottomAppBar: BottomAppBar
   private lateinit var mAdapter: NoteListAdapter
   private lateinit var mNotableViewModel: NotableViewModel
-  private lateinit var mTitleTextView: TextView
   private lateinit var mSearchView: SearchView
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,7 +167,7 @@ class MainActivity : AppCompatActivity() {
     )
     mNotableViewModel.getAll().observe(
       this,
-      Observer { notes ->
+      { notes ->
         notes?.let {
           ALL_NOTES = notes as ArrayList<Notable>
           adapter.setNotes(ALL_NOTES)
@@ -326,22 +323,19 @@ class MainActivity : AppCompatActivity() {
     invalidateOptionsMenu()
   }
 
-  fun onCheckBoxClick(checkBoxView: View) {
-    (checkBoxView as CheckBox).let { checkBoxView ->
-      val noteListItemRecyclerView = checkBoxView.parent.parent as RecyclerView
-      val holder = noteListItemRecyclerView.findViewHolderForAdapterPosition(checkBoxView.tag as Int) as NoteListItemAdapter.NoteListItemViewModeViewHolder
-      val adapter = holder.adapter
-      if (holder != null) {
-        if (checkBoxView.isChecked) {
-          adapter.handleCheckBoxClick(checkBoxView.tag as Int, true, holder)
-        } else {
-          adapter.handleCheckBoxClick(checkBoxView.tag as Int, false, holder)
-        }
-        // find the NoteList to which the item we checked belongs to
-        val noteList = ALL_NOTES.filterIsInstance<NoteList>().firstOrNull { it.items == adapter.getNoteListItems() }
+  fun onCheckBoxClick(view: View) {
+    val checkBoxView = view as CheckBox
+    val noteListItemPos = view.tag as Int
+    val noteListItemRecyclerView = view.parent.parent as RecyclerView
+    val holder = noteListItemRecyclerView.findViewHolderForAdapterPosition(noteListItemPos) as NoteListItemAdapter.NoteListItemViewModeViewHolder
+    val noteListItemAdapter = holder.adapter
 
-        noteList?.let { saveEditedNote(noteList) }
-      }
+    if (holder != null) {
+      noteListItemAdapter.handleCheckBoxClick(view.tag as Int, checkBoxView.isChecked, holder)
     }
+
+    // find the NoteList to which the item we checked belongs to
+    val noteList = ALL_NOTES.filterIsInstance<NoteList>().firstOrNull { it.items == noteListItemAdapter.getNoteListItems() }
+    noteList?.let { saveEditedNote(noteList) }
   }
 }

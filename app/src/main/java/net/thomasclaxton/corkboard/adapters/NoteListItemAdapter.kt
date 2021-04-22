@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +24,6 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
 
   private val inflater: LayoutInflater = LayoutInflater.from(context)
   private var mNoteListItems: ArrayList<NoteListItem> = ArrayList()
-  private var mNoteListItemStrings: ArrayList<String> = ArrayList()
 
   enum class Mode {
     CREATE, VIEW
@@ -45,12 +45,19 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+          // TODO debug
           if (noteListItemTextView.tag != null) {
             mNoteListItems[noteListItemTextView.tag as Int] = NoteListItem(s.toString())
-            mNoteListItemStrings.add(s.toString())
           }
         }
       })
+
+      checkBoxView.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+        val noteListItemPos = checkBoxView.tag as Int
+        mNoteListItems[noteListItemPos].isChecked = isChecked
+
+        setNoteListItemPaintFlags(isChecked, this)
+      }
     }
   }
 
@@ -77,9 +84,7 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
           holder.noteListItemDeleteButton.tag = position
           holder.checkBoxView.tag = position
           if (currentNoteListItem.isChecked) {
-            Log.d(TAG, "onBindViewHolder: ${currentNoteListItem.item} is ${currentNoteListItem.isChecked}")
-            holder.itemView.editTextNoteListItem.paintFlags =
-              Paint.STRIKE_THRU_TEXT_FLAG
+            holder.itemView.editTextNoteListItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             holder.checkBoxView.isChecked = true
           }
         }
@@ -90,7 +95,6 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
           holder.noteListItemTextView.tag = position
           holder.checkBoxView.tag = position
           if (currentNoteListItem.isChecked) {
-            Log.d(TAG, "onBindViewHolder: ${currentNoteListItem.item} is ${currentNoteListItem.isChecked}")
             holder.itemView.editTextNoteListItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             holder.checkBoxView.isChecked = true
           }
@@ -99,27 +103,34 @@ class NoteListItemAdapter(val context: Context, private val mode: Mode) :
     }
   }
 
+  /** Adds item to top **/
+  fun addItem() {
+    mNoteListItems.add(0, NoteListItem(""))
+    notifyItemInserted(0)
+  }
+
   fun handleCheckBoxClick(position: Int, checked: Boolean, holder: RecyclerView.ViewHolder) {
     mNoteListItems[position].isChecked = checked
+    setNoteListItemPaintFlags(checked, holder)
+
+    notifyItemChanged(position)
+  }
+
+  fun setNoteListItemPaintFlags(checked: Boolean, holder: RecyclerView.ViewHolder) {
     if (checked) {
       holder.itemView.editTextNoteListItem.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
     } else {
       holder.itemView.editTextNoteListItem.paintFlags = 0
     }
-    notifyDataSetChanged()
-  }
-
-  fun addItem() {
-    mNoteListItems.add(NoteListItem(""))
-    notifyDataSetChanged()
   }
 
   fun removeItem(position: Int) {
-    mNoteListItems[position].isChecked = false
-    mNoteListItems.removeAt(position)
-    // TODO: Look at fixing notifyItemRemoved() crash
-//        notifyItemRemoved(position)
-    notifyDataSetChanged()
+    if (position >= mNoteListItems.size)
+      mNoteListItems.removeAt(position - 1)
+    else
+      mNoteListItems.removeAt(position)
+
+    notifyItemRemoved(position)
   }
 
   fun setNoteListItems(items: ArrayList<NoteListItem>) {

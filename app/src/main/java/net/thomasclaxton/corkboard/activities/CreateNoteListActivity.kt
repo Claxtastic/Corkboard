@@ -10,6 +10,7 @@ import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_create_note_list.*
+import kotlinx.android.synthetic.main.row_note_list_item.*
 import net.thomasclaxton.corkboard.R
 import net.thomasclaxton.corkboard.adapters.NoteListItemAdapter
 import net.thomasclaxton.corkboard.models.NoteList
@@ -67,22 +68,8 @@ class CreateNoteListActivity : AppCompatActivity() {
     mAdapter.removeItem(view.tag as Int)
   }
 
-  fun onCheckBoxClick(checkBoxView: View) {
-    (checkBoxView as CheckBox).let {
-      val noteListItemPos = it.tag as Int
-      val holder: RecyclerView.ViewHolder? = recyclerViewListItems.findViewHolderForAdapterPosition(noteListItemPos)
-      if (holder != null) {
-        if (it.isChecked) {
-          mAdapter.handleCheckBoxClick(noteListItemPos, true, holder)
-        } else {
-          mAdapter.handleCheckBoxClick(noteListItemPos, false, holder)
-        }
-      }
-    }
-  }
-
   override fun onBackPressed() {
-    // auto save not on back press if note is not empty
+    // auto save on back press if note is not empty
     saveNoteList()
 
     super.onBackPressed()
